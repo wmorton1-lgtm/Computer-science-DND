@@ -6,7 +6,7 @@
 // * Your indexed functions should throw IndexOutOfBoundsException if index is invalid!
 // */
 
-// public class MyArrayListt<E> {
+// public class ARExample<E> {
 
 // /* Internal Object counter */
 // protected int objectCount;
@@ -16,13 +16,13 @@
 
 // /* Constructor: Create it with whatever capacity you want? */
 // @SuppressWarnings("unchecked")
-// public MyArrayListt() {
+// public ARExample() {
 // this.internalArray = (E[])new Object[100];
 // }
 
 // /* Constructor with initial capacity */
 // @SuppressWarnings("unchecked")
-// public MyArrayListt(int initialCapacity){
+// public ARExample(int initialCapacity){
 // this.internalArray = (E[])new Object[initialCapacity];
 // }
 
@@ -48,7 +48,7 @@
 // public E remove(int index) {
 // /* ---- YOUR CODE HERE ---- */
 // }
-
+// // 
 // /* Removes the first occurrence of the specified element from this list,
 // * if it is present. If the list does not contain the element, it is unchanged.
 // * More formally, removes the element with the lowest index i such that

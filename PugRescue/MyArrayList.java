@@ -48,10 +48,31 @@ public class MyArrayList<E> {
 	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
 		if (objectCount == internalArray.length - 1) {
-			E[] newinternalArray = (E[]) new Object[internalArray.length *2];
+			E[] newinternalArray = (E[]) new Object[internalArray.length * 2];
 		}
 		internalArray[objectCount] = obj;
 		objectCount++;
+		return true;
+	}
+
+	public E remove(int index) {
+		E wasRemoved = internalArray[index];
+		for (int i = index; i < objectCount - 1; i++) {
+			internalArray[i] = internalArray[i + 1];
+		}
+		objectCount -= 1;
+		return wasRemoved;
+	}
+
+	public boolean remove(E obj) {
+		for (int index = 0; index < internalArray.length; index++) {
+			if (internalArray[index].equals(obj)) {
+				remove(index);
+				objectCount--;
+				return true;
+			}
+		}
+		return false;
 	}
 
 
