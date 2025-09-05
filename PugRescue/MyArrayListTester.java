@@ -1,9 +1,8 @@
-import java.rmi.dgc.DGC;
 import java.util.ArrayList;
 
-public class PugTester {
+public class MyArrayListTester {
     public static void main(String[] args) {
-        ArrayList<Dog> dogs = new ArrayList<Dog>();
+        MyArrayList<Dog> dogs = new MyArrayList<Dog>();
         Dog jef = new Dog("Jef", "Golden Retriever");
         Dog pug = new Dog("Pug", "Pugdog");
         Dog xander = new Dog("Xander", "Golden Retriever");
@@ -17,16 +16,18 @@ public class PugTester {
         dogs.add(jackson);
         dogs.add(tim);
 
+        // *INITIAIZLISNG** ^^^
+
+
+        
+        dogs.remove(tim);
+        System.out.println(dogs.toString());
+        System.out.println("\n");
+
         for (int i = 0; i < dogs.size(); i++) {
             System.out.println(dogs.get(i).toString());
-
         }
         System.out.println("\n");
-        PugSaver.rescuePugs(dogs);
-        for (int i = 0; i < dogs.size(); i++) {
-            System.out.println(dogs.get(i).toString());
-
-        }
         
     }
 }

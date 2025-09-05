@@ -49,6 +49,10 @@ public class MyArrayList<E> {
 	public boolean add(E obj) {
 		if (objectCount == internalArray.length - 1) {
 			E[] newinternalArray = (E[]) new Object[internalArray.length * 2];
+			for (int i = 0; i < newinternalArray.length; i++) {
+				newinternalArray[i] =internalArray[i];
+			}
+			internalArray = newinternalArray;
 		}
 		internalArray[objectCount] = obj;
 		objectCount++;
@@ -73,6 +77,25 @@ public class MyArrayList<E> {
 			}
 		}
 		return false;
+	}
+
+	public boolean contains(E obj) {
+		for (int i = 0; i < internalArray.length; i++) {
+			if (internalArray[i].equals(obj)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// o(n)
+	public String toString() {
+		String finishedString = "";
+		for (int index = 0; index < objectCount; index++) {
+			finishedString += internalArray[index].toString();
+			finishedString += "\n";
+		}
+		return finishedString;
 	}
 
 

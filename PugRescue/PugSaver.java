@@ -4,7 +4,7 @@ import java.util.Objects;
 public class PugSaver {
 
 	// Moves every dog whose breed is "Pug" in the list to the back of the list
-	public static void rescuePugs(MyArrayList<Dog> list) {
+	public static void rescuePugs(ArrayList<Dog> list) {
 		if(list == null || list.size() == 0 || list.size() == 1) {
 			throw new IllegalArgumentException("List is null bro");
 		}
