@@ -17,11 +17,13 @@ public class PugTester {
         dogs.add(jackson);
         dogs.add(tim);
 
+        System.out.println("before savedogs");
         for (int i = 0; i < dogs.size(); i++) {
             System.out.println(dogs.get(i).toString());
 
         }
         System.out.println("\n");
+        System.out.println("after save dogs");
         PugSaver.rescuePugs(dogs);
         for (int i = 0; i < dogs.size(); i++) {
             System.out.println(dogs.get(i).toString());

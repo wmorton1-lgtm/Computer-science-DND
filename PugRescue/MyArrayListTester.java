@@ -16,18 +16,23 @@ public class MyArrayListTester {
         dogs.add(jackson);
         dogs.add(tim);
 
+        for (int i = 0; i < dogs.size(); i++) {
+            System.out.println(dogs.get(i).toString());
+            System.out.println(Integer.toString(dogs.objectCount));
+        }
+
         // *INITIAIZLISNG** ^^^
 
 
-        
-        dogs.remove(tim);
+        System.out.println("\n _____________INITALIZING OVER____");
+        dogs.remove(pug);
         System.out.println(dogs.toString());
         System.out.println("\n");
 
-        for (int i = 0; i < dogs.size(); i++) {
-            System.out.println(dogs.get(i).toString());
-        }
-        System.out.println("\n");
+        // for (int i = 0; i < dogs.size(); i++) {
+        //     System.out.println(dogs.get(i).toString());
+        // }
+        // System.out.println("\n");
         
     }
 }

@@ -32,6 +32,10 @@ public class MyArrayList<E> {
 		return objectCount;
 	}
 
+	public boolean isEmpty() {
+		return objectCount == 0;
+	}
+
 	/* Get the index-th object in the list. */
 	public E get(int index) {
 		return internalArray[index];
@@ -47,21 +51,30 @@ public class MyArrayList<E> {
 	/* Add an object to the end of the list; returns true */
 	@SuppressWarnings("unchecked")
 	public boolean add(E obj) {
+		add(objectCount, obj);
+		return true;
+	}
+
+	/* Insert an object at index */
+	@SuppressWarnings("unchecked")
+	public void add(int index, E obj) {
 		if (objectCount == internalArray.length - 1) {
 			E[] newinternalArray = (E[]) new Object[internalArray.length * 2];
 			for (int i = 0; i < newinternalArray.length; i++) {
-				newinternalArray[i] =internalArray[i];
+				newinternalArray[i] = internalArray[i];
 			}
 			internalArray = newinternalArray;
 		}
-		internalArray[objectCount] = obj;
+		for (int i = objectCount; i > index; i--) {
+			internalArray[i] = internalArray[i - 1];
+		}
+		internalArray[index] = obj;
 		objectCount++;
-		return true;
 	}
 
 	public E remove(int index) {
 		E wasRemoved = internalArray[index];
-		for (int i = index; i < objectCount - 1; i++) {
+		for (int i = index; i < objectCount; i++) {
 			internalArray[i] = internalArray[i + 1];
 		}
 		objectCount -= 1;
@@ -69,14 +82,14 @@ public class MyArrayList<E> {
 	}
 
 	public boolean remove(E obj) {
-		for (int index = 0; index < internalArray.length; index++) {
+		int orginialObjectCount = objectCount;
+		for (int index = 0; index < objectCount; index++) {
 			if (internalArray[index].equals(obj)) {
 				remove(index);
-				objectCount--;
-				return true;
+				// index--;
 			}
 		}
-		return false;
+		return orginialObjectCount != objectCount;
 	}
 
 	public boolean contains(E obj) {
@@ -90,12 +103,12 @@ public class MyArrayList<E> {
 
 	// o(n)
 	public String toString() {
-		String finishedString = "";
+		String finishedString = "[";
 		for (int index = 0; index < objectCount; index++) {
 			finishedString += internalArray[index].toString();
-			finishedString += "\n";
+			finishedString += ", ";
 		}
-		return finishedString;
+		return finishedString + "]";
 	}
 
 

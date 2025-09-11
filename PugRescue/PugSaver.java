@@ -5,13 +5,16 @@ public class PugSaver {
 
 	// Moves every dog whose breed is "Pug" in the list to the back of the list
 	public static void rescuePugs(ArrayList<Dog> list) {
-		if(list == null || list.size() == 0 || list.size() == 1) {
+		if(list == null || list.size() == 0) {
 			throw new IllegalArgumentException("List is null bro");
+		} 
+		if (list.size() == 1) {
+			return;
 		}
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).getBreed().toLowerCase().indexOf("golden") != -1) {
 				for (int j = list.size() - 1; j > 0; j--) {
-					if (list.get(j).getBreed().toLowerCase().indexOf("gold") == -1) {
+					if (list.get(j).getBreed().toLowerCase().indexOf("golden") == -1) {
 						if (i < j) {
 							Dog fromBack = list.get(j);
 							Dog fromFront = list.get(i);
