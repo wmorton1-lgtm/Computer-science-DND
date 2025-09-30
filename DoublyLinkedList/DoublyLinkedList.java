@@ -15,6 +15,8 @@ public class DoublyLinkedList {
 	// Constructor: creates a list that contains
 	// all elements from the array values, in the same order
 	public DoublyLinkedList(Nucleotide[] values) {
+		SENTINEL.setNext(SENTINEL);
+		SENTINEL.setPrevious(SENTINEL);
 		int index = 0;
 		for (int i = 0; i < values.length; i++) {
 			add(values[index]);
@@ -53,10 +55,10 @@ public class DoublyLinkedList {
 	// Returns the index of the first element in equal to obj;
 	// if not found, returns -1.
 	public int indexOf(Nucleotide obj) {
-		ListNode2<Nucleotide> foo = new ListNode2<Nucleotide>(obj);
+		ListNode2<Nucleotide> objNode = new ListNode2<Nucleotide>(obj);
 		int index = 0;
 		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n = n.getNext()) {
-			if (n.equals(foo)) {
+			if (n.equals(objNode)) {
 				return index;
 			}
 			index++;
@@ -70,9 +72,12 @@ public class DoublyLinkedList {
 		if (obj.equals(null)) {
 			return false;
 		}
-		ListNode2<Nucleotide> foo = new ListNode2<Nucleotide>(obj);
-		SENTINEL.getPrevious().setNext(foo);
-		foo.setNext(SENTINEL);
+		ListNode2<Nucleotide> toAdd = new ListNode2<Nucleotide>(obj);
+	
+		toAdd.setPrevious(SENTINEL.getPrevious());
+		SENTINEL.getPrevious().setNext(toAdd);
+		toAdd.setNext(SENTINEL);
+		SENTINEL.setPrevious(toAdd);
 		nodeCount++;
 		return true;
 	}
@@ -99,7 +104,7 @@ public class DoublyLinkedList {
 	public String toString() {
 		StringBuilder sting = new StringBuilder("[");
 
-		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL.getPrevious()); n =
+		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n =
 				n.getNext()) {
 			sting.append(n.getValue());
 			sting.append(", ");
