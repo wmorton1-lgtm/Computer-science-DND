@@ -20,6 +20,7 @@ public class DoublyLinkedList {
 		int index = 0;
 		for (int i = 0; i < values.length; i++) {
 			add(values[index]);
+			index++;
 		}
 	}
 
@@ -55,13 +56,23 @@ public class DoublyLinkedList {
 	// Returns the index of the first element in equal to obj;
 	// if not found, returns -1.
 	public int indexOf(Nucleotide obj) {
-		ListNode2<Nucleotide> objNode = new ListNode2<Nucleotide>(obj);
 		int index = 0;
-		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n = n.getNext()) {
-			if (n.equals(objNode)) {
-				return index;
+		if (obj == null) {
+			for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n =
+					n.getNext()) {
+				if (n.getValue() == null) {
+					return index;
+				}
+				index++;
 			}
-			index++;
+		} else {
+			for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n =
+					n.getNext()) {
+				if (n.getValue().equals(obj)) {
+					return index;
+				}
+				index++;
+			}
 		}
 		return -1;
 	}
@@ -69,11 +80,8 @@ public class DoublyLinkedList {
 	// Adds obj to this collection. Returns true if successful;
 	// otherwise returns false.
 	public boolean add(Nucleotide obj) {
-		if (obj.equals(null)) {
-			return false;
-		}
 		ListNode2<Nucleotide> toAdd = new ListNode2<Nucleotide>(obj);
-	
+
 		toAdd.setPrevious(SENTINEL.getPrevious());
 		SENTINEL.getPrevious().setNext(toAdd);
 		toAdd.setNext(SENTINEL);
@@ -84,7 +92,23 @@ public class DoublyLinkedList {
 
 	// // Removes the first element that is equal to obj, if any.
 	// // Returns true if successful; otherwise returns false.
-	// public boolean remove(Nucleotide obj) {}
+	public boolean remove(Nucleotide obj) {
+		int index = 0;
+		int objIndex = indexOf(obj);
+		if (objIndex == -1) {
+			return false;
+		}
+		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n = n.getNext()) {
+			if (index == objIndex) {
+				n.getNext().setPrevious(n.getPrevious());
+				n.getPrevious().setNext(n.getNext());
+				nodeCount--;
+				return true;
+			}
+			index++;
+		}
+		return false;2
+	}
 
 	// // Returns the i-th element.
 	// public Nucleotide get(int i) {}
@@ -98,14 +122,25 @@ public class DoublyLinkedList {
 
 	// // Removes the i-th element and returns its value.
 	// // Decrements the size of the list by one.
-	// public Nucleotide remove(int i) {}
+	// public Nucleotide remove(int i) {
+	// 	int index = 0;
+	// 	int objIndex = indexOf(obj);
+	// 	if (objIndex == -1) {
+	// 		return false;
+	// 	}
+	// 	for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n = n.getNext()) {
+	// 		if (index == objIndex) {
+	// 			toRemove.getPrevious().setNext(n);
+	// 		}
+	// 		index++;
+	// 	}
+	// }
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
 	public String toString() {
 		StringBuilder sting = new StringBuilder("[");
 
-		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n =
-				n.getNext()) {
+		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.equals(SENTINEL); n = n.getNext()) {
 			sting.append(n.getValue());
 			sting.append(", ");
 		}
