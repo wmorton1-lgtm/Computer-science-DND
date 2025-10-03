@@ -1,5 +1,8 @@
 // Implements a singly-linked list.
 
+import java.io.IOException;
+import java.lang.instrument.IllegalClassFormatException;
+import javax.naming.directory.InvalidSearchControlsException;
 
 public class SinglyLinkedList<E> {
 	private ListNode<E> head;
@@ -22,8 +25,6 @@ public class SinglyLinkedList<E> {
 		for (int i = 0; i < values.length; i++) {
 			add((E) values[i]);
 		}
-		// head = new ListNode<E>((E) values[0]);
-		// tail = new ListNode<E>((E) values[nodeCount -1]);
 	}
 
 	public ListNode<E> getHead() {
@@ -36,7 +37,7 @@ public class SinglyLinkedList<E> {
 
 	// Returns true if this list is empty; otherwise returns false.
 	public boolean isEmpty() {
-		return (head == null || tail == null || nodeCount == 0);
+		return nodeCount == 0;
 	}
 
 	// Returns the number of elements in this list.
@@ -47,9 +48,6 @@ public class SinglyLinkedList<E> {
 	// Returns true if this list contains an element equal to obj;
 	// otherwise returns false.
 	public boolean contains(E obj) {
-		if (obj.equals(null)) {
-			throw new NullPointerException("CONTAINS() OBJECT PARAMETER WAS NULL");
-		}
 		return indexOf(obj) != -1;
 	}
 
@@ -60,7 +58,7 @@ public class SinglyLinkedList<E> {
 			throw new NullPointerException("IndexOf() OBJECT PARAMETER WAS NULL");
 		}
 		int index = 0;
-		for (ListNode<E> n = head; !n.getNext().equals(null); n = n.getNext()) {
+		for (ListNode<E> n = head; n != null; n = n.getNext()) {
 			if (n.getValue().equals(obj)) {
 				return index;
 			}
@@ -72,74 +70,144 @@ public class SinglyLinkedList<E> {
 	// Adds obj to this collection. Returns true if successful;
 	// otherwise returns false.
 	public boolean add(E obj) {
-		if (obj.equals(null)) {
+		if (obj.equals(null) || obj == null) {
 			return false;
 		}
+
 		ListNode<E> objNode = new ListNode<E>(obj);
+		if (head == null && nodeCount == 0) {
+			head = objNode;
+			tail = objNode;
+			head.setNext(tail);
+		}
 		tail.setNext(objNode);
 		tail = objNode;
+		tail.setNext(null);
 		nodeCount++;
 		return true;
 
 	}
 
+
 	// Removes the first element that is equal to obj, if any.
 	// Returns true if successful; otherwise returns false.
-	// public boolean remove(E obj) {
-	// 	ListNode<E> objNode = new ListNode<E>(obj);
-	// 	int index = indexOf(obj);
-	// 	if (index == -1) {
-	// 		return false;
-	// 	}
-	// 	// ListNode<E> objNode = new ListNode<E>(obj);
-	// 	for (ListNode<E> n = head; !n.getNext().equals(null); n = n.getNext()) {
-	// 		if (n.equals(objNode)) {
-				
-	// 		}
-	// 	}
-		
-	// }
+	public boolean remove(E obj) {
+		if (obj == null) {
+			throw new IllegalArgumentException("remove(obj) parameter was null ");
+		}
+		int objIndex = indexOf(obj);
+		if (objIndex == -1) {
+			return false;
+		} else {
+			if (remove(objIndex) == obj) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-	// // Returns the i-th element.
-	// public E get(int i) {}
+	// Returns the i-th element.
+	public E get(int i) {
+		if (i > nodeCount || i < 0) {
+			throw new IndexOutOfBoundsException("Get(i) index was out of range");
+		}
+		int index = 0;
+		for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			if (index == i) {
+				return n.getValue();
+			}
+			index++;
+		}
+		throw new IllegalStateException(
+				"get(i) the index made it thru the edge cases and somehow nothing was returned");
+	}
+
+
 
 	// Replaces the i-th element with obj and returns the old value.
-	// public E set(int i, Object obj) {
+	public E set(int i, Object obj) {
+		if (i > nodeCount - 1 || i < 0) {
+			throw new IllegalArgumentException("Set(i, obj) index was out of range");
+		}
+		E objE = (E) obj;
+		int index = 0;
+		for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			if (index == i) {
+				E toReturn = n.getValue();
+				n.setValue(objE);
+				return toReturn;
+			}
+			index++;
+		}
+		throw new IllegalAccessError("set()-nothing was set & thusforth nothing returned");
+	}
 
-	// }
+	// Inserts obj to become the i-th element. Increments the size
+	// of the list by one.
+	// instance variables FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX FIX
+	public void add(int i, Object obj) {
+		if (i < 0 || i > nodeCount - 1) {
+			throw new IndexOutOfBoundsException("add(index, obj) - index was out of bounds");
+		}
+		if (obj == null) {
+			throw new NullPointerException("add(index, obj) - obj was null");
+		}
 
-	// // Inserts obj to become the i-th element. Increments the size
-	// // of the list by one.
-	// public void add(int i, Object obj) {}
-
-	// // Removes the i-th element and returns its value.
-	// // Decrements the size of the list by one.
-
-
-	// public E remove(int i) {
-	// 	if (i == 0) {
-	// 		head = head.getNext();
-	// 	}
-	// 	int index = 0;
-
-	// 	for (ListNode<E> n = head; !n.getNext().equals(null); n = n.getNext()) {
+		ListNode<E> objNode = new ListNode<E>((E) obj);
+		if (i == 0) {
+			add((E) obj);
+			for (ListNode<E> n = head; n.getNext().getNext() != null; n = n.getNext()) {
+				n.getNext().setValue(n.getValue());
+			}
+			head.setValue((E) obj);
 			
-	// 		if (index == i) {
-				
-	// 		}
-	// 		index++;
-	// 	}
-	// }
+
+
+		} else {
+			int index = 0;
+			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+				if (index == i - 1) {
+					objNode.setNext(n.getNext());
+					n.setNext(objNode);
+					nodeCount++;
+				}
+				index++;
+			}
+		}
+	}
+
+	// Removes the i-th element and returns its value.
+	// Decrements the size of the list by one.
+
+
+	public E remove(int i) {
+		if (i > nodeCount - 1 || i < 0) {
+			throw new IllegalArgumentException(
+					"Remove(index) The index requested was out of range");
+		}
+		int index = 0;
+		for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			if (index == i - 1) {
+				E toReturn = n.getNext().getValue();
+				n.setNext(n.getNext().getNext());
+				nodeCount--;
+				return toReturn;
+			}
+			index++;
+		}
+		throw new IllegalAccessError("The index was out of range & not removed (ohshit)");
+	}
 
 	// Returns a string representation of this list exactly like that for MyArrayList.
 	public String toString() {
-		String toReturn = "";
-		for (ListNode<E> n = head; !n.getNext().equals(null); n = n.getNext()) {
-			toReturn += n.getValue().toString();
+		StringBuilder toReturn = new StringBuilder("[");
+		for (ListNode<E> n = head; n.getNext() != null; n = n.getNext()) {
+			toReturn.append(n.getValue().toString());
+			toReturn.append(", ");
 		}
-		return toReturn;
+		toReturn.append(tail.getValue());
+		return toReturn.append("]").toString();
 
 	}
-
 
 }
