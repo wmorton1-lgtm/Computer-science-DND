@@ -17,10 +17,8 @@ public class DoublyLinkedList {
 	public DoublyLinkedList(Nucleotide[] values) {
 		SENTINEL.setNext(SENTINEL);
 		SENTINEL.setPrevious(SENTINEL);
-		int index = 0;
 		for (int i = 0; i < values.length; i++) {
-			add(values[index]);
-			index++;
+			add(values[i]);
 		}
 	}
 
@@ -143,7 +141,7 @@ public class DoublyLinkedList {
 	// // of the list by one.
 	public void add(int i, Nucleotide obj) {
 		if (i > nodeCount || i < 0) {
-			throw new IndexOutOfBoundsException("add(i, obj) -  the inex was out of bounds");
+			throw new IndexOutOfBoundsException("add(i, obj) -  the index was out of bounds");
 		}
 		int index = 0;
 		ListNode2<Nucleotide> objNode = new ListNode2<Nucleotide>(obj);
@@ -196,9 +194,15 @@ public class DoublyLinkedList {
 
 	// // Like question 7 on the SinglyLinkedList test:
 	// // Add a "segment" (another list) onto the end of this list
-	// public void addSegmentToEnd(DoublyLinkedList seg) {
+	public void addSegmentToEnd(DoublyLinkedList seg) {
+		ListNode2<Nucleotide> lastFromSeg = seg.getSentinel().getPrevious();
+		ListNode2<Nucleotide> firstFromSeg = seg.getSentinel().getNext();
+		lastFromSeg.setNext(SENTINEL);
+		firstFromSeg.setPrevious(SENTINEL);
+		SENTINEL.setPrevious(lastFromSeg);
+		SENTINEL.setNext(firstFromSeg);
 
-	// }
+	}
 
 	// // Like question 8 on the SinglyLinkedList test:
 	// // You are to remove the next 16 nodes from the list, after the node
@@ -206,9 +210,26 @@ public class DoublyLinkedList {
 	// // (on the test these nodes were assumed to contain CCCCCCCCGGGGGGGG, but
 	// here
 	// // you do not need to assume or check for that)
-	// public void removeCCCCCCCCGGGGGGGG(ListNode2<Nucleotide> nodeBefore) {
-
-	// }
+	public void removeCCCCCCCCGGGGGGGG(ListNode2<Nucleotide> nodeBefore) {
+		if (nodeCount < 16) {
+			throw new IndexOutOfBoundsException("The linked list had less than 16 indexees");
+		}
+		if (nodeCount == 16) {
+			SENTINEL.setNext(SENTINEL);
+			SENTINEL.setPrevious(SENTINEL);
+			return;
+		}
+		
+		int index = 0;
+		for (ListNode2<Nucleotide> n = SENTINEL.getNext(); !n.getNext().equals(SENTINEL); n = n.getNext()) {
+			if (index == 16) {
+				nodeBefore.setNext(n);
+				n.setNext(nodeBefore);
+				return;
+			} 
+			index++;
+		}
+	}
 
 	// // Like question 9 on the SinglyLinkedList test:
 	// // You are to find and delete the first instance of seg in the list.

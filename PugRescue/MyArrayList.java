@@ -38,11 +38,17 @@ public class MyArrayList<E> {
 
 	/* Get the index-th object in the list. */
 	public E get(int index) {
+		if (index > internalArray.length || index < 0) {
+			throw new IndexOutOfBoundsException("get (index) out of bounds");
+		}
 		return internalArray[index];
 	}
 
 	/* Replace the object at index with obj. returns object that was replaced. */
 	public E set(int index, E obj) {
+		if (index > internalArray.length || index < 0) {
+			throw new IndexOutOfBoundsException("set (index, obj) out of bounds");
+		}
 		E toReplace = internalArray[index];
 		internalArray[index] = obj;
 		return toReplace;
@@ -58,7 +64,11 @@ public class MyArrayList<E> {
 	/* Insert an object at index */
 	@SuppressWarnings("unchecked")
 	public void add(int index, E obj) {
-		if (objectCount == internalArray.length - 1) {
+		if (index > internalArray.length || index < 0) {
+			throw new IndexOutOfBoundsException("add (index, obj) out of bounds");
+		}
+
+		if (objectCount == internalArray.length) {
 			E[] newinternalArray = (E[]) new Object[internalArray.length * 2];
 			for (int i = 0; i < newinternalArray.length; i++) {
 				newinternalArray[i] = internalArray[i];
@@ -73,6 +83,9 @@ public class MyArrayList<E> {
 	}
 
 	public E remove(int index) {
+		if (index > internalArray.length || index < 0) {
+			throw new IndexOutOfBoundsException("remove (index) out of bounds");
+		}
 		E wasRemoved = internalArray[index];
 		for (int i = index; i < objectCount; i++) {
 			internalArray[i] = internalArray[i + 1];
@@ -83,32 +96,51 @@ public class MyArrayList<E> {
 
 	public boolean remove(E obj) {
 		int orginialObjectCount = objectCount;
-		for (int index = 0; index < objectCount; index++) {
-			if (internalArray[index].equals(obj)) {
-				remove(index);
-				// index--;
+		if (obj == null) {
+			for (int index = 0; index < objectCount; index++) {
+				if (internalArray[index] == obj) {
+					remove(index);
+				}
+			}
+		} else {
+			for (int index = 0; index < objectCount; index++) {
+				if (internalArray[index].equals(obj)) {
+					remove(index);
+				}
 			}
 		}
+
 		return orginialObjectCount != objectCount;
 	}
 
 	public boolean contains(E obj) {
-		for (int i = 0; i < internalArray.length; i++) {
-			if (internalArray[i].equals(obj)) {
-				return true;
+		if (obj == null) {
+			for (int i = 0; i < internalArray.length; i++) {
+				if (internalArray[i] == obj) {
+					return true;
+				}
+			}
+		} else {
+			for (int i = 0; i < internalArray.length; i++) {
+				if (internalArray[i].equals(obj)) {
+					return true;
+				}
 			}
 		}
+
 		return false;
 	}
 
 	// o(n)
 	public String toString() {
-		String finishedString = "[";
-		for (int index = 0; index < objectCount; index++) {
-			finishedString += internalArray[index].toString();
-			finishedString += ", ";
+		StringBuilder finishedString = new StringBuilder();
+		finishedString.append("[");
+		for (int index = 0; index < objectCount - 1; index++) {
+			finishedString.append(internalArray[index].toString());
+			finishedString.append(", ");
 		}
-		return finishedString + "]";
+		finishedString.append(internalArray[objectCount - 1]);
+		return finishedString.append("]").toString();
 	}
 
 
