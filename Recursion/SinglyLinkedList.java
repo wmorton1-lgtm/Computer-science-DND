@@ -5,8 +5,8 @@ import java.lang.instrument.IllegalClassFormatException;
 import javax.naming.directory.InvalidSearchControlsException;
 
 public class SinglyLinkedList<E> {
-	private ListNode<E> head;
-	private ListNode<E> tail;
+	private ListNode head;
+	private ListNode tail;
 	private int nodeCount;
 
 	// Constructor: creates an empty list
@@ -27,11 +27,11 @@ public class SinglyLinkedList<E> {
 		}
 	}
 
-	public ListNode<E> getHead() {
+	public ListNode getHead() {
 		return head;
 	}
 
-	public ListNode<E> getTail() {
+	public ListNode getTail() {
 		return tail;
 	}
 
@@ -56,14 +56,14 @@ public class SinglyLinkedList<E> {
 	public int indexOf(E obj) {
 		int index = 0;
 		if (obj == null) {
-			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			for (ListNode n = head; n != null; n = n.getNext()) {
 				if (n.getValue() == obj) {
 					return index;
 				}
 				index++;
 			}
 		} else {
-			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			for (ListNode n = head; n != null; n = n.getNext()) {
 				if (n.getValue().equals(obj)) {
 					return index;
 				}
@@ -76,7 +76,7 @@ public class SinglyLinkedList<E> {
 	// Adds obj to this collection. Returns true if successful;
 	// otherwise returns false.
 	public boolean add(E obj) {
-		ListNode<E> objNode = new ListNode<E>(obj);
+		ListNode objNode = new ListNode(obj);
 		if (head == null) {
 			head = objNode;
 			tail = objNode;
@@ -107,12 +107,12 @@ public class SinglyLinkedList<E> {
 	}
 
 	// Returns tashe i-th element.
-	public E get(int i) {
+	public Object get(int i) {
 		if (i > nodeCount - 1 || i < 0) {
 			throw new IndexOutOfBoundsException("Get(i) index was out of range");
 		}
 		int index = 0;
-		for (ListNode<E> n = head; n != null; n = n.getNext()) {
+		for (ListNode n = head; n != null; n = n.getNext()) {
 			if (index == i) {
 				return n.getValue();
 			}
@@ -123,16 +123,15 @@ public class SinglyLinkedList<E> {
 	}
 
 	// Replaces the i-th element with obj and returns the old value.
-	public E set(int i, Object obj) {
+	public Object set(int i, Object obj) {
 		if (i > nodeCount - 1 || i < 0) {
 			throw new IndexOutOfBoundsException("Set(i, obj) index was out of range");
 		}
-		E objE = (E) obj;
 		int index = 0;
-		for (ListNode<E> n = head; n != null; n = n.getNext()) {
+		for (ListNode n = head; n != null; n = n.getNext()) {
 			if (index == i) {
-				E toReturn = n.getValue();
-				n.setValue(objE);
+				Object toReturn = n.getValue();
+				n.setValue(obj);
 				return toReturn;
 			}
 			index++;
@@ -148,7 +147,7 @@ public class SinglyLinkedList<E> {
 			throw new IndexOutOfBoundsException("add(index, obj) - index was out of bounds");
 		}
 
-		ListNode<E> objNode = new ListNode<E>((E) obj);
+		ListNode objNode = new ListNode(obj);
 
 		if (i == 0) {
 			objNode.setNext(head);
@@ -159,7 +158,7 @@ public class SinglyLinkedList<E> {
 			nodeCount++;
 		} else {
 			int index = 0;
-			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			for (ListNode n = head; n != null; n = n.getNext()) {
 				if (index == i - 1) {
 					objNode.setNext(n.getNext());
 					n.setNext(objNode);
@@ -176,14 +175,14 @@ public class SinglyLinkedList<E> {
 	// Removes the i-th element and returns its value.
 	// Decrements the size of the list by one.
 
-	public E remove(int i) {
+	public Object remove(int i) {
 		if (i >= nodeCount || i < 0) {
 			throw new IndexOutOfBoundsException(
 					"Remove(index) The index requested was out of range");
 		}
 
 		if (i == 0) {
-			E toReturn = head.getValue();
+			Object toReturn = head.getValue();
 			head = head.getNext();
 			nodeCount--;
 			return toReturn;
@@ -191,8 +190,8 @@ public class SinglyLinkedList<E> {
 
 		int index = 0;
 		if (i == nodeCount - 1) {
-			E toReturn = tail.getValue();
-			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			Object toReturn = tail.getValue();
+			for (ListNode n = head; n != null; n = n.getNext()) {
 				if (n.getNext().equals(tail)) {
 					tail = n;
 					tail.setNext(null);
@@ -201,9 +200,9 @@ public class SinglyLinkedList<E> {
 				}
 			}
 		} else {
-			for (ListNode<E> n = head; n != null; n = n.getNext()) {
+			for (ListNode n = head; n != null; n = n.getNext()) {
 				if (index == i - 1) {
-					E toReturn = n.getNext().getValue();
+					Object toReturn = n.getNext().getValue();
 					n.setNext(n.getNext().getNext());
 					nodeCount--;
 					return toReturn;
@@ -221,7 +220,7 @@ public class SinglyLinkedList<E> {
 			return "[]";
 		}
 		StringBuilder toReturn = new StringBuilder("[");
-		for (ListNode<E> n = head; n.getNext() != null; n = n.getNext()) {
+		for (ListNode n = head; n.getNext() != null; n = n.getNext()) {
 			toReturn.append(n.getValue().toString());
 			toReturn.append(", ");
 		}
