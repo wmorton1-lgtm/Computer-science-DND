@@ -4,10 +4,10 @@ public class Recursion {
 	// but in reverse
 	public static void printListInReverse(ListNode head) {
 		if (head.getNext() == null) {
-			System.out.print(head.getValue().toString());
+			System.out.print(head.getValue().toString() + " ");
 		} else {
 			printListInReverse(head.getNext());
-			System.out.println(head.getNext().getValue().toString());
+			System.out.print(head.getValue().toString() + " ");
 		}
 	}
 
@@ -20,7 +20,34 @@ public class Recursion {
 	// Trying to infect outside the confines of the grid also has no effect
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
+		if (grid[r][c].equals("vaccinated")) {
+			return;
+		}
+		if (grid[r][c].equals("infected")) {
+			if (r == 0 && c == 0) {
+				infect(grid, r + 1, c);
+				infect(grid, r, c + 1);
+			}
+			if (r == 0 && c > 0) {
+				infect(grid, r + 1, c);
+				infect(grid, r, c + 1);
+			}
+			
+			infect(grid, r + 1, c);
+			infect(grid, r, c + 1);
+			infect(grid, r - 1, c);
+			infect(grid, r - 1, c);
+		}
+	}
 
+	public static void print2DArray(String[][] grid) {
+		
+		for (int i = 0; i < grid.length; i++) {
+			for (int j = 0; j < grid.length; j++) {
+				System.out.print(grid[i][j] + ' ');
+			}
+			System.out.println("\n");
+		}
 	}
 
 	// How many subsets are there of the numbers 1...n
