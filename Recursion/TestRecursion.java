@@ -16,7 +16,13 @@ public class TestRecursion {
             }
         }
         Recursion.print2DArray(list);
+        Recursion.infect(list, 0, 0);
+        Recursion.print2DArray(list);
+
+
+        
 
         
     }
+    
 }

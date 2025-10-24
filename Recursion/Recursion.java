@@ -20,28 +20,73 @@ public class Recursion {
 	// Trying to infect outside the confines of the grid also has no effect
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
+		if (r >= grid.length || c >= grid[0].length) {
+			throw new IndexOutOfBoundsException("infect(grid, r ,c): index was out of bounds");
+		}
 		if (grid[r][c].equals("vaccinated")) {
 			return;
 		}
-		if (grid[r][c].equals("infected")) {
-			if (r == 0 && c == 0) {
+		grid[r][c] = "infected";
+		// if (r == 0 || c == 0) {
+		// if (r == 0 && c == 0) {
+		// infect(grid, r + 1, c);
+		// infect(grid, r, c + 1);
+		// }
+		// if (r == 0) {
+		// infect(grid, r + 1, c);
+		// infect(grid, r, c + 1);
+		// infect(grid, r, c - 1);
+		// }
+		// if (c == 0) {
+		// infect(grid, r + 1, c);
+		// infect(grid, r, c + 1);
+		// infect(grid, r - 1, c);
+		// }
+		// } else if (r == grid.length - 1 || c == grid[0].length - 1) {
+		// if (r == grid.length - 1 && c == grid[0].length - 1) {
+		// infect(grid, r - 1, c);
+		// infect(grid, r, c - 1);
+		// }
+		// if (r == grid.length - 1) {
+		// infect(grid, r - 1, c);
+		// infect(grid, r, c + 1);
+		// infect(grid, r, c - 1);
+		// }
+		// if (c == 0) {
+		// infect(grid, r + 1, c);
+		// infect(grid, r, c + 1);
+		// infect(grid, r - 1, c);
+		// }
+		// } else {
+		// infect(grid, r + 1, c);
+		// infect(grid, r, c + 1);
+		// infect(grid, r - 1, c);
+		// infect(grid, r, c - 1);
+		// }
+		if (grid[r + 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
+			try {
 				infect(grid, r + 1, c);
+			} catch (Exception e) {}
+		}
+		if (grid[r][c + 1] != "infected" || grid[r + 1][c] != "vaccinated") {
+			try {
 				infect(grid, r, c + 1);
-			}
-			if (r == 0 && c > 0) {
-				infect(grid, r + 1, c);
-				infect(grid, r, c + 1);
-			}
-			
-			infect(grid, r + 1, c);
-			infect(grid, r, c + 1);
-			infect(grid, r - 1, c);
-			infect(grid, r - 1, c);
+			} catch (Exception e) {}
+		}
+		if (grid[r - 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
+			try {
+				infect(grid, r - 1, c);
+			} catch (Exception e) {}
+		}
+		if (grid[r][c - 1] != "infected" || grid[r + 1][c] != "vaccinated") {
+			try {
+				infect(grid, r, c - 1);
+			} catch (Exception e) {}
 		}
 	}
 
 	public static void print2DArray(String[][] grid) {
-		
+
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid.length; j++) {
 				System.out.print(grid[i][j] + ' ');
@@ -82,7 +127,7 @@ public class Recursion {
 	// "bc", "abc"
 	// Order is your choice
 	public static void printSubsets(String str) {
-
+		// vivir vivir salsa
 	}
 
 	// List contains a single String to start.
