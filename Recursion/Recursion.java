@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Recursion {
 
 	// Prints the value of every node in the singly linked list with the given head,
@@ -158,38 +160,35 @@ public class Recursion {
 	// System.out.println("\"" + a + str + "\",");
 	// }
 
-	public static String returnSubsets(String str) {
+	public static String[] addLetterAndPrint(String str, String a) {
+		S
 		if (str.length() == 2) { // "" "1" "2" "12"
-			returnSubsets("\"" + str + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
-					+ str.substring(1) + "\", ");
-		} else if (str.length() == 1) { // "" "1"
-			return "\"" + str + "\"" ;
-		} else {
+			return ("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
+					+ str.substring(1) + "\", " + "\"" + str + "\"");
 			
-		}
+		} else if (str.length() == 1) { // "" "1"
+			return ("\"" + str + "\"");
+		} else if (str.isEmpty() == true) {
+			return "";
+		} 
+		return addLetterAndPrint(str.substring(0, str.length() - 1), str.substring(str.length() - 1)) + a;
 	}
 
+
 	public static void printSubsets(String str) {
-		// if (str.length() == 0) {
-		// 	addLetterToBeginningAndMaybePrintItToo("", "");
+		// if (str.length() == 2) { // "" "1" "2" "12"
+		// 	System.out.println("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
+		// 			+ str.substring(1) + "\", " + "\"" + str + "\"");
+		// 	return;
+		// } else if (str.length() == 1) { // "" "1"
+		// 	System.out.println("\"" + str + "\"");
+		// 	return;
+		// } else if (str.isEmpty() == true) {
+		// 	System.out.println("");
+		// 	return;
 		// }
-		// if (str.length() == 1) {
-		// 	addLetterToBeginningAndMaybePrintItToo(str, "");
-		// }
-		// if (str.length() >= 2) {
-		// 	addLetterToBeginningAndMaybePrintItToo(str.substring(1), "");
-		// 	addLetterToBeginningAndMaybePrintItToo(str.substring(0, 1), "");
-		// 	addLetterToBeginningAndMaybePrintItToo(str, "");
-		// 	printSubsets(str.substring(1));
-		// }
-		// System.out.println("\"" + str + "\"");
-		
-		if (str.length() == 2) {
-			System.out.println(str.substring(1));
-			System.out.println(str.substring(0, 1));
-			System.out.println(str);
-		}
-		System.out.println(str.substring(0, 1)) + printSubsets();
+		System.out.println(addLetterAndPrint(str, ""));
+
 	}
 
 	// List contains a single String to start.

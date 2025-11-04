@@ -29,7 +29,7 @@ public class TestRecursion {
         // System.out.println(Recursion.countWaysToJumpUpStairs(4));
 
         // printSubsets
-        Recursion.printSubsets("abc");
+        Recursion.printSubsets("ab");
 
         
 
