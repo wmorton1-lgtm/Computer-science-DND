@@ -27,6 +27,9 @@ public class Recursion {
 			return;
 		}
 		grid[r][c] = "infected";
+
+
+
 		// if (r == 0 || c == 0) {
 		// if (r == 0 && c == 0) {
 		// infect(grid, r + 1, c);
@@ -66,22 +69,26 @@ public class Recursion {
 		if (grid[r + 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
 			try {
 				infect(grid, r + 1, c);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 		if (grid[r][c + 1] != "infected" || grid[r + 1][c] != "vaccinated") {
 			try {
 				infect(grid, r, c + 1);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 		if (grid[r - 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
 			try {
 				infect(grid, r - 1, c);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 		if (grid[r][c - 1] != "infected" || grid[r + 1][c] != "vaccinated") {
 			try {
 				infect(grid, r, c - 1);
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 	}
 
@@ -103,7 +110,13 @@ public class Recursion {
 	// {1,2}, {2,3}, {3,4}, {1,2,3}, {1,2,4}, {1,3,4}, {1,2,3,4}
 	// Precondition: n > 0
 	public static long countNonConsecutiveSubsets(int n) {
-
+		if (n == 1) {
+			return (long) 2;
+		}
+		if (n == 0) {
+			return (long) 1;
+		}
+		return countNonConsecutiveSubsets(n - 1) + countNonConsecutiveSubsets(n - 2);
 	}
 
 	// A kid at the bottom of the stairs can jump up 1, 2, or 3 stairs at a time.
@@ -111,11 +124,25 @@ public class Recursion {
 	// Jumping 1-1-2 is considered different than jumping 1-2-1
 	// Precondition: n > 0
 	public static long countWaysToJumpUpStairs(int n) {
+		if (n == 0) {
+			return (long) 0;
+		}
+		if (n == 1) {
+			return (long) 1;
+		}
+		if (n == 2) {
+			return (long) 2;
+		}
+		if (n == 3) {
+			return (long) 4;
+		}
+		return countWaysToJumpUpStairs(n - 1) + countWaysToJumpUpStairs(n - 2)
+				+ countWaysToJumpUpStairs(n - 3);
 
 	}
 
 	// Everything above this line does NOT require a recursive helper method
-	// ----------------------------------
+	// ------------------------------------
 	// Everything below this line requires a recursive helper method
 	// Any recursive helper method you write MUST have a comment describing:
 	// 1) what the helper method does/returns
@@ -126,8 +153,43 @@ public class Recursion {
 	// For example, subsets("abc") would print out "", "a", "b", "c", "ab", "ac",
 	// "bc", "abc"
 	// Order is your choice
+
+	// public static void addLetterToBeginningAndMaybePrintItToo(String a, String str) {
+	// System.out.println("\"" + a + str + "\",");
+	// }
+
+	public static String returnSubsets(String str) {
+		if (str.length() == 2) { // "" "1" "2" "12"
+			returnSubsets("\"" + str + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
+					+ str.substring(1) + "\", ");
+		} else if (str.length() == 1) { // "" "1"
+			return "\"" + str + "\"" ;
+		} else {
+			
+		}
+	}
+
 	public static void printSubsets(String str) {
-		// vivir vivir salsa
+		// if (str.length() == 0) {
+		// 	addLetterToBeginningAndMaybePrintItToo("", "");
+		// }
+		// if (str.length() == 1) {
+		// 	addLetterToBeginningAndMaybePrintItToo(str, "");
+		// }
+		// if (str.length() >= 2) {
+		// 	addLetterToBeginningAndMaybePrintItToo(str.substring(1), "");
+		// 	addLetterToBeginningAndMaybePrintItToo(str.substring(0, 1), "");
+		// 	addLetterToBeginningAndMaybePrintItToo(str, "");
+		// 	printSubsets(str.substring(1));
+		// }
+		// System.out.println("\"" + str + "\"");
+		
+		if (str.length() == 2) {
+			System.out.println(str.substring(1));
+			System.out.println(str.substring(0, 1));
+			System.out.println(str);
+		}
+		System.out.println(str.substring(0, 1)) + printSubsets();
 	}
 
 	// List contains a single String to start.
