@@ -160,34 +160,54 @@ public class Recursion {
 	// System.out.println("\"" + a + str + "\",");
 	// }
 
-	public static String[] addLetterAndPrint(String str, String a) {
-		S
-		if (str.length() == 2) { // "" "1" "2" "12"
-			return ("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
-					+ str.substring(1) + "\", " + "\"" + str + "\"");
-			
-		} else if (str.length() == 1) { // "" "1"
-			return ("\"" + str + "\"");
-		} else if (str.isEmpty() == true) {
-			return "";
-		} 
-		return addLetterAndPrint(str.substring(0, str.length() - 1), str.substring(str.length() - 1)) + a;
+	public static String[] generateSubsetsArray(String str) {
+		if (str.length() == 2) {
+			String[] baseArray = new String[str.length()];
+			baseArray[0] = "\"\"";
+			baseArray[1] = "\"" + str.substring(0, 1) + "\"";
+			baseArray[2] = "\"" + str.substring(1) + "\"";
+			baseArray[3] = "\"" + str + "\"";
+			return baseArray;
+		}
+		if (str.length() == 1) {
+			String[] baseArray = new String[str.length()];
+			baseArray[0] = "\"\"";
+			baseArray[1] = "\"" + str.substring(0, 1) + "\"";
+			return baseArray;
+		}
+		if (str.length() == 0) {
+			String[] baseArray = new String[str.length()];
+			baseArray[0] = "\"\"";
+			return baseArray;
+		}
+
+		String[] subsets = new String[str.length() * 2];
+		return addLetterToEveryIndex(generateSubsetsArray(str), str, 0);
+	}
+
+	public static String[] addLetterToEveryIndex(String[] array, String a, int i) {
+		if (i == array.length) {
+			return array;
+		}
+		array[i * 2] = array[i] + a;
+		i++;
+		return addLetterToEveryIndex(array, a, i);
 	}
 
 
 	public static void printSubsets(String str) {
 		// if (str.length() == 2) { // "" "1" "2" "12"
-		// 	System.out.println("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
-		// 			+ str.substring(1) + "\", " + "\"" + str + "\"");
-		// 	return;
+		// System.out.println("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
+		// + str.substring(1) + "\", " + "\"" + str + "\"");
+		// return;
 		// } else if (str.length() == 1) { // "" "1"
-		// 	System.out.println("\"" + str + "\"");
-		// 	return;
+		// System.out.println("\"" + str + "\"");
+		// return;
 		// } else if (str.isEmpty() == true) {
-		// 	System.out.println("");
-		// 	return;
+		// System.out.println("");
+		// return;
 		// }
-		System.out.println(addLetterAndPrint(str, ""));
+		System.out.println(generateSubsetsArray(str));
 
 	}
 
