@@ -30,11 +30,13 @@ public class TestRecursion {
 
         // printSubsets
         // Recursion.printSubsets("ab");
-        String[] foo = new String[5];
-        for (int i = 0; i < foo.length; i++) {
-            foo[i] = i + "";
-        }
-        System.out.println(foo.toString());
+        // String[] foo = new String[5];
+        // for (int i = 0; i < foo.length; i++) {
+        //     foo[i] = i + "";
+        // }
+        // System.out.println(foo.toString());
+
+        Recursion.solveHanoi(3);
 
 
 

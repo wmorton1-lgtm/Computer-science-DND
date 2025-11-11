@@ -240,8 +240,37 @@ public class Recursion {
 	// The towers are number 0, 1, 2, and each move should be of
 	// the form "1 -> 2", meaning "take the top disk of tower 1 and
 	// put it on tower 2" etc.
-	public static void solveHanoi(int startingDisks) {
+	public static void printMove(int a, int b) {
+		System.out.println(a + "->" + b);
+	}
 
+	public static void moveTower(int diskCount, int current, int destination) {
+		int free;
+		if (current == 0 && destination == 2) {
+			free = 1;
+		} else if (current == 2 && destination == 1) {
+			free = 0;
+		} else {
+			free = 2;
+		}
+		if (diskCount == 1) {
+			Recursion.printMove(current, destination);
+			return;
+		}
+		if (diskCount == 2) {
+			Recursion.printMove(current, free);
+			Recursion.printMove(current, destination);
+			Recursion.printMove(free, destination);
+		}
+
+
+		moveTower(diskCount - 1, current, destination);
+		Recursion.printMove(current, destination);
+	}
+
+
+	public static void solveHanoi(int startingDisks) {
+		moveTower(startingDisks, 0, 2);
 	}
 
 	// You are partaking in a scavenger hunt!
