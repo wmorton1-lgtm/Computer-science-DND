@@ -22,76 +22,29 @@ public class Recursion {
 	// Trying to infect outside the confines of the grid also has no effect
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
-		if (r >= grid.length || c >= grid[0].length) {
+		if (r >= grid.length || c >= grid[0].length || r < 0 || c < 0) {
 			throw new IndexOutOfBoundsException("infect(grid, r ,c): index was out of bounds");
 		}
-		if (grid[r][c].equals("vaccinated")) {
+		if (grid[r][c].equals("vaccinated") || grid[r][c].equals("infected")) {
 			return;
 		}
 		grid[r][c] = "infected";
-
-
-
-		// if (r == 0 || c == 0) {
-		// if (r == 0 && c == 0) {
-		// infect(grid, r + 1, c);
-		// infect(grid, r, c + 1);
-		// }
-		// if (r == 0) {
-		// infect(grid, r + 1, c);
-		// infect(grid, r, c + 1);
-		// infect(grid, r, c - 1);
-		// }
-		// if (c == 0) {
-		// infect(grid, r + 1, c);
-		// infect(grid, r, c + 1);
-		// infect(grid, r - 1, c);
-		// }
-		// } else if (r == grid.length - 1 || c == grid[0].length - 1) {
-		// if (r == grid.length - 1 && c == grid[0].length - 1) {
-		// infect(grid, r - 1, c);
-		// infect(grid, r, c - 1);
-		// }
-		// if (r == grid.length - 1) {
-		// infect(grid, r - 1, c);
-		// infect(grid, r, c + 1);
-		// infect(grid, r, c - 1);
-		// }
-		// if (c == 0) {
-		// infect(grid, r + 1, c);
-		// infect(grid, r, c + 1);
-		// infect(grid, r - 1, c);
-		// }
-		// } else {
-		// infect(grid, r + 1, c);
-		// infect(grid, r, c + 1);
-		// infect(grid, r - 1, c);
-		// infect(grid, r, c - 1);
-		// }
-		if (grid[r + 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
-			try {
-				infect(grid, r + 1, c);
-			} catch (Exception e) {
-			}
-		}
-		if (grid[r][c + 1] != "infected" || grid[r + 1][c] != "vaccinated") {
-			try {
-				infect(grid, r, c + 1);
-			} catch (Exception e) {
-			}
-		}
-		if (grid[r - 1][c] != "infected" || grid[r + 1][c] != "vaccinated") {
-			try {
-				infect(grid, r - 1, c);
-			} catch (Exception e) {
-			}
-		}
-		if (grid[r][c - 1] != "infected" || grid[r + 1][c] != "vaccinated") {
-			try {
-				infect(grid, r, c - 1);
-			} catch (Exception e) {
-			}
-		}
+		boolean touchingTop = r == 0;
+		boolean touchingBottom = r == grid.length - 1;
+		boolean touchingLeft = c == 0;
+		boolean touchingRight = c == grid[0].length - 1;
+		if (!touchingRight) {
+			infect(grid, r, c + 1);
+		} 
+		if (!touchingLeft) {
+			infect(grid, r, c - 1);
+		} 
+		if (!touchingTop) {
+			infect(grid, r - 1, c);
+		} 
+		if (!touchingBottom) {
+			infect(grid, r + 1, c);
+		} 
 	}
 
 	public static void print2DArray(String[][] grid) {
@@ -160,55 +113,52 @@ public class Recursion {
 	// System.out.println("\"" + a + str + "\",");
 	// }
 
+	public static void printSubsets(String str) {
+		printSubsetArray(generateSubsetsArray(str), 0);
+	}
+
+	public static void printSubsetArray(String[] array, int i) {
+		if (i == array.length - 1) {
+			System.out.println("\"" + array[i] + "\"");
+			return;
+		}
+		System.out.println("\"" + array[i] + "\",");
+		printSubsetArray(array, i + 1);
+	}
+
 	public static String[] generateSubsetsArray(String str) {
 		if (str.length() == 2) {
-			String[] baseArray = new String[str.length()];
-			baseArray[0] = "\"\"";
-			baseArray[1] = "\"" + str.substring(0, 1) + "\"";
-			baseArray[2] = "\"" + str.substring(1) + "\"";
-			baseArray[3] = "\"" + str + "\"";
+			String[] baseArray = new String[4];
+			baseArray[0] = "";
+			baseArray[1] = "" + str.substring(0, 1) + "";
+			baseArray[2] = "" + str.substring(1) + "";
+			baseArray[3] = "" + str + "";
 			return baseArray;
 		}
 		if (str.length() == 1) {
-			String[] baseArray = new String[str.length()];
-			baseArray[0] = "\"\"";
-			baseArray[1] = "\"" + str.substring(0, 1) + "\"";
+			String[] baseArray = new String[2];
+			baseArray[0] = "";
+			baseArray[1] = "" + str.substring(0, 1) + "";
 			return baseArray;
 		}
 		if (str.length() == 0) {
-			String[] baseArray = new String[str.length()];
-			baseArray[0] = "\"\"";
+			String[] baseArray = new String[1];
+			baseArray[0] = "";
 			return baseArray;
 		}
 
-		String[] subsets = new String[str.length() * 2];
-		return addLetterToEveryIndex(generateSubsetsArray(str), str, 0);
+
+		return addLetterToEveryIndex(generateSubsetsArray(str.substring(0, str.length() - 1)),
+				str.substring(str.length() - 1));
 	}
 
-	public static String[] addLetterToEveryIndex(String[] array, String a, int i) {
-		if (i == array.length) {
-			return array;
+	public static String[] addLetterToEveryIndex(String[] array, String a) {
+		String[] subsets = new String[array.length * 2];
+		for (int j = 0; j < array.length; j++) {
+			subsets[j + array.length] = array[j] + a;
+			subsets[j] = array[j];
 		}
-		array[i * 2] = array[i] + a;
-		i++;
-		return addLetterToEveryIndex(array, a, i);
-	}
-
-
-	public static void printSubsets(String str) {
-		// if (str.length() == 2) { // "" "1" "2" "12"
-		// System.out.println("\"" + "\", " + "\"" + str.substring(0, 1) + "\", " + "\""
-		// + str.substring(1) + "\", " + "\"" + str + "\"");
-		// return;
-		// } else if (str.length() == 1) { // "" "1"
-		// System.out.println("\"" + str + "\"");
-		// return;
-		// } else if (str.isEmpty() == true) {
-		// System.out.println("");
-		// return;
-		// }
-		System.out.println(generateSubsetsArray(str));
-
+		return subsets;
 	}
 
 	// List contains a single String to start.
@@ -293,7 +243,37 @@ public class Recursion {
 	// time 9
 	// for a total of 20 points, so it would return 20.
 	public static int scavHunt(int[] times, int[] points) {
-
+		return findMaxReward(times, points, 0);
 	}
 
+	public static int findMaxReward(int[] times, int[] points, int i) {
+		if (i >= times.length) {
+			return 0;
+		}
+		int doesTake = points[i];
+		if (nextOneThatsFiveAway(i, times) != -1) {
+			doesTake += findMaxReward(times, points, nextOneThatsFiveAway(i, times));
+		}
+		int dontTake = findMaxReward(times, points, i + 1);
+		return Math.max(doesTake, dontTake);
+	}
+
+	public static int nextOneThatsFiveAway(int index, int[] times) {
+		for (int i = index + 1; i < times.length; i++) {
+			if (times[i] >= times[index] + 5) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	// public static boolean isBaseCase(int[] times, int i) {
+	// 	if (i > times.length - 6) {
+	// 		if (times[i + 1] < times[i] + 5 || times[i + 2] < times[i] + 5
+	// 				|| times[i + 3] < times[i] + 5 || times[i + 4] < times[i] + 5
+	// 				|| times[i + 5] < times[i] + 5) {
+	// 			return true;
+	// 		}
+	// 	}
+	// }
 }
