@@ -35,16 +35,16 @@ public class Recursion {
 		boolean touchingRight = c == grid[0].length - 1;
 		if (!touchingRight) {
 			infect(grid, r, c + 1);
-		} 
+		}
 		if (!touchingLeft) {
 			infect(grid, r, c - 1);
-		} 
+		}
 		if (!touchingTop) {
 			infect(grid, r - 1, c);
-		} 
+		}
 		if (!touchingBottom) {
 			infect(grid, r + 1, c);
-		} 
+		}
 	}
 
 	public static void print2DArray(String[][] grid) {
@@ -168,13 +168,78 @@ public class Recursion {
 	// "cab", "cba"
 	// Order is your choice
 	public static void printPermutations(String str) {
+		String[] permutations = generatePermutationsArray(str);
+		for (int i = 0; i < permutations.length; i++) {
+			System.out.println(permutations[i]);
+		}
+	}
+
+	public static String[] generatePermutationsArray(String str) {
+		if (str.length() == 2) {
+			String[] baseArray = new String[2];
+			baseArray[0] = str.substring(0, 1) + str.substring(1);
+			baseArray[1] = str;
+			return baseArray;
+		}
+		if (str.length() == 1) {
+			String[] baseArray = new String[1];
+			baseArray[0] = str;
+			return baseArray;
+		}
+		if (str.length() == 0) {
+			String[] baseArray = new String[1];
+			baseArray[0] = "";
+			return baseArray;
+		}
+
+		String firstLetter = str.substring(0, 1);
+		String restOfStr = str.substring(1);
+		String[] permutationsOfTheRest = generatePermutationsArray(restOfStr);
+		String[] combigned = new String[permutationsOfTheRest.length * str.length()];
+
+		int i = 0;
+		for (String permutatedPart : permutationsOfTheRest) {
+			for (int j = 0; j <= permutatedPart.length(); j++) {
+
+			}
+		}
+		return addFirstLetterToRest(str.substring(0, 1),
+				generatePermutationsArray(str.substring(1, str.length())), 0);
 
 	}
+
 
 	// Performs a mergeSort on the given array of ints
 	// Precondition: you may assume there are NO duplicates!!!
 	public static void mergeSort(int[] ints) {
+		ArrayList<Integer> intsList = new ArrayList<>();
+		splitArray(intsList);
+	}
 
+	public static ArrayList<int[]> splitArray(int[] ints) {
+		ArrayList<int[]> intList = new ArrayList<>();
+		if (ints.length== 1) {
+			return;
+		}
+		intList.addAll(splitArray(ints.remo));
+		
+	}
+
+	
+
+	public static int[] getHalf(int whatHalf, int[] ints) {
+		// if (whatHalf == 1) {
+		// int[] firstHalf = new int[ints.length / 2];
+		// for (int i = 0; i < ints.length / 2; i++) {
+		// firstHalf[i] = ints[i];
+		// }
+		// return firstHalf;
+		// }
+		// int[] secondHalf = new int[ints.length / 2 + ints.length % 2];
+		// for (int i = ints.length / 2; i < secondHalf.length; i++) {
+		// secondHalf[i] = ints[i];
+		// }
+		// return secondHalf;
 	}
 
 	// Performs a quickSort on the given array of ints
@@ -268,12 +333,12 @@ public class Recursion {
 	}
 
 	// public static boolean isBaseCase(int[] times, int i) {
-	// 	if (i > times.length - 6) {
-	// 		if (times[i + 1] < times[i] + 5 || times[i + 2] < times[i] + 5
-	// 				|| times[i + 3] < times[i] + 5 || times[i + 4] < times[i] + 5
-	// 				|| times[i + 5] < times[i] + 5) {
-	// 			return true;
-	// 		}
-	// 	}
+	// if (i > times.length - 6) {
+	// if (times[i + 1] < times[i] + 5 || times[i + 2] < times[i] + 5
+	// || times[i + 3] < times[i] + 5 || times[i + 4] < times[i] + 5
+	// || times[i + 5] < times[i] + 5) {
+	// return true;
+	// }
+	// }
 	// }
 }
