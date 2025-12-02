@@ -5,11 +5,11 @@ public class Recursion {
 	// Prints the value of every node in the singly linked list with the given head,
 	// but in reverse
 	public static void printListInReverse(ListNode head) {
-		if (head.getNext() == null) {
-			System.out.print(head.getValue().toString() + " ");
+		if (head == null) {
+			return;
 		} else {
 			printListInReverse(head.getNext());
-			System.out.print(head.getValue().toString() + " ");
+			System.out.println(head.getValue().toString());
 		}
 	}
 
@@ -23,7 +23,7 @@ public class Recursion {
 	// Precondition: grid has no null entries
 	public static void infect(String[][] grid, int r, int c) {
 		if (r >= grid.length || c >= grid[0].length || r < 0 || c < 0) {
-			throw new IndexOutOfBoundsException("infect(grid, r ,c): index was out of bounds");
+			return;
 		}
 		if (grid[r][c].equals("vaccinated") || grid[r][c].equals("infected")) {
 			return;
@@ -48,7 +48,9 @@ public class Recursion {
 	}
 
 	public static void print2DArray(String[][] grid) {
-
+		if (grid == null) {
+			throw new NullPointerException("oops");
+		}
 		for (int i = 0; i < grid.length; i++) {
 			for (int j = 0; j < grid.length; j++) {
 				System.out.print(grid[i][j] + ' ');
@@ -119,10 +121,10 @@ public class Recursion {
 
 	public static void printSubsetArray(String[] array, int i) {
 		if (i == array.length - 1) {
-			System.out.println("\"" + array[i] + "\"");
+			System.out.println(array[i]);
 			return;
 		}
-		System.out.println("\"" + array[i] + "\",");
+		System.out.println(array[i]);
 		printSubsetArray(array, i + 1);
 	}
 
@@ -130,15 +132,15 @@ public class Recursion {
 		if (str.length() == 2) {
 			String[] baseArray = new String[4];
 			baseArray[0] = "";
-			baseArray[1] = "" + str.substring(0, 1) + "";
-			baseArray[2] = "" + str.substring(1) + "";
-			baseArray[3] = "" + str + "";
+			baseArray[1] = str.substring(0, 1);
+			baseArray[2] = str.substring(1);
+			baseArray[3] = str;
 			return baseArray;
 		}
 		if (str.length() == 1) {
 			String[] baseArray = new String[2];
 			baseArray[0] = "";
-			baseArray[1] = "" + str.substring(0, 1) + "";
+			baseArray[1] = str.substring(0, 1);
 			return baseArray;
 		}
 		if (str.length() == 0) {
@@ -177,7 +179,7 @@ public class Recursion {
 	public static String[] generatePermutationsArray(String str) {
 		if (str.length() == 2) {
 			String[] baseArray = new String[2];
-			baseArray[0] = str.substring(0, 1) + str.substring(1);
+			baseArray[0] = str.substring(1) + str.substring(0, 1);
 			baseArray[1] = str;
 			return baseArray;
 		}
@@ -195,58 +197,90 @@ public class Recursion {
 		String firstLetter = str.substring(0, 1);
 		String restOfStr = str.substring(1);
 		String[] permutationsOfTheRest = generatePermutationsArray(restOfStr);
-		String[] combigned = new String[permutationsOfTheRest.length * str.length()];
+		String[] combined = new String[permutationsOfTheRest.length * str.length()];
 
 		int i = 0;
 		for (String permutatedPart : permutationsOfTheRest) {
 			for (int j = 0; j <= permutatedPart.length(); j++) {
-
+				String newPermutation =
+						permutatedPart.substring(0, j) + firstLetter + permutatedPart.substring(j);
+				combined[i] = newPermutation;
+				i++;
 			}
 		}
-		return addFirstLetterToRest(str.substring(0, 1),
-				generatePermutationsArray(str.substring(1, str.length())), 0);
-
+		return combined;
 	}
 
 
 	// Performs a mergeSort on the given array of ints
 	// Precondition: you may assume there are NO duplicates!!!
 	public static void mergeSort(int[] ints) {
-		ArrayList<Integer> intsList = new ArrayList<>();
-		splitArray(intsList);
-	}
-
-	public static ArrayList<int[]> splitArray(int[] ints) {
-		ArrayList<int[]> intList = new ArrayList<>();
-		if (ints.length== 1) {
+		if (ints.length <= 1 || ints == null) {
 			return;
 		}
-		intList.addAll(splitArray(ints.remo));
-		
+		int[] sorted = splitAndSort(ints);
+		for (int i = 0; i < sorted.length; i++) {
+			ints[i] = sorted[i];
+		}
 	}
 
-	
+	public static int[] splitAndSort(int[] ints) {
+		if (ints.length <= 1) {
+			return ints;
+		}
 
-	public static int[] getHalf(int whatHalf, int[] ints) {
-		// if (whatHalf == 1) {
-		// int[] firstHalf = new int[ints.length / 2];
-		// for (int i = 0; i < ints.length / 2; i++) {
-		// firstHalf[i] = ints[i];
-		// }
-		// return firstHalf;
-		// }
-		// int[] secondHalf = new int[ints.length / 2 + ints.length % 2];
-		// for (int i = ints.length / 2; i < secondHalf.length; i++) {
-		// secondHalf[i] = ints[i];
-		// }
-		// return secondHalf;
+		int[] leftSide = new int[ints.length / 2];
+		for (int i = 0; i < leftSide.length; i++) {
+			leftSide[i] = ints[i];
+		}
+		int[] rightSide = new int[ints.length - ints.length / 2];
+		for (int i = ints.length / 2; i < rightSide.length + ints.length / 2; i++) {
+			rightSide[i - ints.length / 2] = ints[i];
+		}
+
+		int[] sortedLeft = splitAndSort(leftSide);
+		int[] sortedRight = splitAndSort(rightSide);
+
+		return mergeSortCombine(sortedLeft, sortedRight);
+	}
+
+	public static int[] mergeSortCombine(int[] left, int[] right) {
+		int[] combined = new int[left.length + right.length];
+		int l = 0;
+		int r = 0;
+		for (int index = 0; index < combined.length; index++) {
+			if (l >= left.length) {
+				combined[index] = right[r];
+				r++;
+			} else if (r >= right.length) {
+				combined[index] = left[l];
+				l++;
+			} else if (left[l] <= right[r]) {
+				combined[index] = left[l];
+				l++;
+			} else {
+				combined[index] = right[r];
+				r++;
+			}
+		}
+		return combined;
 	}
 
 	// Performs a quickSort on the given array of ints
 	// Use the middle element (index n/2) as the pivot
 	// Precondition: you may assume there are NO duplicates!!!
 	public static void quickSort(int[] ints) {
+		if (ints.length <= 1 || ints == null) {
+			return;
+		}
+		int[] sorted = splitAndSort(ints);
+		for (int i = 0; i < sorted.length; i++) {
+			ints[i] = sorted[i];
+		}
+	}
 
+	public static void quickSortHelper(int[] ints) {
+		String pleaseSpeedINeedThis = ints[0] + "";
 	}
 
 	// Prints a sequence of moves (one on each line)
@@ -256,36 +290,36 @@ public class Recursion {
 	// the form "1 -> 2", meaning "take the top disk of tower 1 and
 	// put it on tower 2" etc.
 	public static void printMove(int a, int b) {
-		System.out.println(a + "->" + b);
+		System.out.println(a + " -> " + b);
 	}
 
-	public static void moveTower(int diskCount, int current, int destination) {
-		int free;
-		if (current == 0 && destination == 2) {
-			free = 1;
-		} else if (current == 2 && destination == 1) {
-			free = 0;
-		} else {
-			free = 2;
-		}
+	public static void moveTower(int diskCount, int current, int destination, int free) {
+		// int free;
+		// if (current == 0 && destination == 2) {
+		// free = 1;
+		// } else if (current == 2 && destination == 1) {
+		// free = 0;
+		// } else {
+		// free = 2;
+		// }
 		if (diskCount == 1) {
-			Recursion.printMove(current, destination);
+			printMove(current, destination);
 			return;
 		}
 		if (diskCount == 2) {
-			Recursion.printMove(current, free);
-			Recursion.printMove(current, destination);
-			Recursion.printMove(free, destination);
+			printMove(current, free);
+			printMove(current, destination);
+			printMove(free, destination);
+			return;
 		}
-
-
-		moveTower(diskCount - 1, current, destination);
-		Recursion.printMove(current, destination);
+		moveTower(diskCount - 1, current, free, destination);
+		printMove(current, destination);
+		moveTower(diskCount - 1, free, destination, current);
 	}
 
 
 	public static void solveHanoi(int startingDisks) {
-		moveTower(startingDisks, 0, 2);
+		moveTower(startingDisks, 0, 2, 1);
 	}
 
 	// You are partaking in a scavenger hunt!

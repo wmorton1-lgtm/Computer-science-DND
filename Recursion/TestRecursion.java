@@ -35,6 +35,8 @@ public class TestRecursion {
         // // count stairs
         // System.out.println(Recursion.countWaysToJumpUpStairs(4));
 
+        // generatePermutations
+        Recursion.printPermutations("abc");
 
         // printSubsets
         // Recursion.printSubsets("XanderIsAbit");
@@ -45,9 +47,19 @@ public class TestRecursion {
         // System.out.println(foo.toString());
 
         // Recursion.solveHanoi(3);
+
+        // // scavHUNT 
         // int[] times = {1, 2, 3};
         // int[] points = {1, 15, 6};
         // System.out.println("" + Recursion.scavHunt(times, points));
+
+        // // mergeSort
+        // int[] times = {1, 9, 3, 8, 15, 6};
+        // Recursion.mergeSort(times);
+        // for (int i : times) {
+        //     System.out.print(i + ", ");
+        // }
+        
 
 
     }
