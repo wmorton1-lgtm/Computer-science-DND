@@ -52,8 +52,8 @@ public class FolderNode extends FileSystemNode {
         if (this.getChildByName(fileName) != null) {
             return false;
         }
-        FileNode foo = new FileNode(fileName, this, size);
-        children.add(foo);
+        FileNode newFile = new FileNode(fileName, this, size);
+        children.add(newFile);
         return true;
     }
 
@@ -93,24 +93,18 @@ public class FolderNode extends FileSystemNode {
 
     @Override
     public int getHeight() { // todo: // todo: // todo: // todo: // todo:
-        // int height = 0;
-        // for (int i = 0; i < children.size(); i++) {
-        // if (!children.get(i).isFolder()) {
-        // return height;
-        // }
-        // height += children.get(i).getHeight();
-        // }
-        // return height += 1;
-
         int height = 0;
         for (int i = 0; i < children.size(); i++) {
-            FolderNode thisChild = (FolderNode) children.get(i);
-            if (!children.get(i).isFolder() || thisChild.getChildren().isEmpty()) {
-                return 0;
-            } else {
-
+            
+            if (!children.get(i).isFolder()) {
+                FolderNode thisChild = (FolderNode) children.get(i);
+                int nodeHeight = 1 + thisChild.getHeight();
+                if (nodeHeight > height) {
+                    height = nodeHeight;
+                }
             }
         }
+        return height;
     }
 
     @Override
