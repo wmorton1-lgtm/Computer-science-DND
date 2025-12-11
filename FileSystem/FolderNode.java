@@ -52,7 +52,7 @@ public class FolderNode extends FileSystemNode {
         if (this.getChildByName(fileName) != null) {
             return false;
         }
-        FileNode foo = new FileNode(this, fileName, size);
+        FileNode foo = new FileNode(fileName, this, size);
         children.add(foo);
         return true;
     }
@@ -77,26 +77,67 @@ public class FolderNode extends FileSystemNode {
      * When a match is found, its full path can be printed by the caller using toString().
      */
     public boolean containsNameRecursive(String searchName) {
-        for (int i = 0; i < array.length; i++) {
-            children.get(i).containsNameRecursive(searchName);
-        }/
+        for (int i = 0; i < children.size(); i++) {
+            if (children.get(i).isFolder() == true) {
+                FolderNode temp = (FolderNode) children.get(i);
+                temp.containsNameRecursive(searchName);
+            } else {
+                if (children.get(i).getName().equals(searchName)) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
     }
 
     @Override
-    public int getHeight() {
-        // TODO: compute the maximum height among children; empty folders have value 0
-        return 0;
+    public int getHeight() { // todo: // todo: // todo: // todo: // todo:
+        // int height = 0;
+        // for (int i = 0; i < children.size(); i++) {
+        // if (!children.get(i).isFolder()) {
+        // return height;
+        // }
+        // height += children.get(i).getHeight();
+        // }
+        // return height += 1;
+
+        int height = 0;
+        for (int i = 0; i < children.size(); i++) {
+            FolderNode thisChild = (FolderNode) children.get(i);
+            if (!children.get(i).isFolder() || thisChild.getChildren().isEmpty()) {
+                return 0;
+            } else {
+
+            }
+        }
     }
 
     @Override
     public int getSize() {
-        // TODO: sum the sizes of all files contained in this directory and its descendants
-        return 0;
+        int size = 0;
+        for (int i = 0; i < children.size(); i++) {
+            size += children.get(i).getSize();
+        }
+        return size;
     }
 
     @Override
     public int getTotalNodeCount() {
-        // TODO: count this directory plus all descendant files and folders
-        return 0;
+        if (this.isFolder()) {
+            if (this.getChildren().isEmpty()) {
+                return 0;
+            }
+        }
+        int nodeCount = 0;
+        for (int i = 0; i < children.size(); i++) {
+            if (children.get(i).isFolder()) {
+                nodeCount++;
+                nodeCount += children.get(i).getTotalNodeCount();
+            } else {
+                nodeCount++;
+            }
+        }
+        return nodeCount;
     }
 }
