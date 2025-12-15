@@ -48,9 +48,10 @@ public class Navigator {
      *   - Other paths are interpreted relative to the current directory.
      */
     private void cd(String[] args) {
-        // TODO: implement directory navigation // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO:TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: //  TODO:TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: // TODO: TODOTODOTODOTODOTODO
-        if
-        this.currentDirectory = 
+        // if (args[0][0] == "/") {
+        //     currentDirectory =;
+        // }
+       
     }
 
     /**
@@ -82,7 +83,6 @@ public class Navigator {
             throw new NullPointerException("touch() invalid args");
         }
         currentDirectory.addFile(args[0], Integer.parseInt(args[1]));
-
     }
 
     /**
@@ -99,22 +99,22 @@ public class Navigator {
             throw new NullPointerException("find() target string was null");
         }
 
-        ArrayList<String> pathList = currentDirectory.makePathList(currentDirectory, targetName);
+        ArrayList<String> pathList = new ArrayList<String>();
+        makePathList(currentDirectory, targetName, pathList);
         for (String child : pathList) {
             System.out.println(child.toString());
         }
     }
-
-    private ArrayList<String> makePathList(FolderNode tempDirectory, String targetName) {
+    
+    private void makePathList(FolderNode tempDirectory, String targetName, ArrayList<String> pathList) {
         List<FileSystemNode> tempChildren =  tempDirectory.getChildren();
-        ArrayList<String> pathList = new ArrayList<String>();
         for (int i = 0; i < tempChildren.size(); i++) {
             if (tempChildren.get(i).isFolder()) {
-                pathList.makePathList(tempChildren.get(i), targetName);
+                FolderNode tempChild =  (FolderNode) tempChildren.get(i);
+                makePathList(tempChild, targetName, pathList);
             } else if (tempChildren.get(i).getName().equals(targetName)) {
                 pathList.add(tempChildren.get(i).getName().toString());
             }
-
         }
     }
 

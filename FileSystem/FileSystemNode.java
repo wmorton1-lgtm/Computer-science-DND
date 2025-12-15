@@ -16,9 +16,6 @@ public abstract class FileSystemNode {
      * Returns the folder that directly contains this node, or null if this is the root.
      */
     public FolderNode getParent() {
-        if (parent.getName().equals("/")) {
-            return null;
-        }
         return parent;
     }
 
@@ -41,7 +38,7 @@ public abstract class FileSystemNode {
      */
     public int getDepth() {
         int i = 0;
-        for (FileSystemNode current = this; !current.getName().equals("/"); current =
+        for (FileSystemNode current = this; current.getParent() != null; current =
                 this.getParent()) {
             i++;
         }
@@ -72,8 +69,10 @@ public abstract class FileSystemNode {
      */
     @Override
     public String toString() {
-        // TODO: build a string like "/root/folder/subfolder/file"
-        return this.getParent().toString() + "/" + this.getName();
-
+        StringBuilder toReturn = new StringBuilder();
+        if (this.getParent() == null) {
+            return "/";
+        }
+        return "" + toReturn.append(this.getParent().toString()).append("/").append(this.getName());
     }
 }

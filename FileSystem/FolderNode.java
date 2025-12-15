@@ -134,4 +134,8 @@ public class FolderNode extends FileSystemNode {
         }
         return nodeCount;
     }
+
+    // public int NodeCountHelper() {
+       
+    // }
 }
