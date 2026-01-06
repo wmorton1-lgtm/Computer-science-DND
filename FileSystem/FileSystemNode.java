@@ -39,7 +39,7 @@ public abstract class FileSystemNode {
     public int getDepth() {
         int i = 0;
         for (FileSystemNode current = this; current.getParent() != null; current =
-                this.getParent()) {
+                current.getParent()) {
             i++;
         }
         return i;
@@ -69,10 +69,11 @@ public abstract class FileSystemNode {
      */
     @Override
     public String toString() {
-        StringBuilder toReturn = new StringBuilder();
-        if (this.getParent() == null) {
+        if (getParent() == null) {
             return "/";
+        } else if (getParent().toString().equals("/")) {
+            return "/" + getName();
         }
-        return "" + toReturn.append(this.getParent().toString()).append("/").append(this.getName());
+        return getParent().toString() + "/" + getName();
     }
 }

@@ -40,19 +40,60 @@ public class Navigator {
     }
 
     /**
-     * Changes the current directory based on a single path argument.
-     * Behavior should mirror typical Unix shells:
-     *   - "."  refers to the current directory (no change).
-     *   - ".." moves to the parent directory (if one exists).
-     *   - Paths starting with "/" are interpreted from the root directory.
-     *   - Other paths are interpreted relative to the current directory.
+     * Changes the current directory based on a single path argument. Behavior should mirror typical
+     * Unix shells: - "." refers to the current directory (no change). - ".." moves to the parent
+     * directory (if one exists). - Paths starting with "/" are interpreted from the root directory.
+     * - Other paths are interpreted relative to the current directory.
      */
     private void cd(String[] args) {
-        // if (args[0][0] == "/") {
-        //     currentDirectory =;
-        // }
-       
+        if (args == null) {
+            throw new NullPointerException("args was null");
+        }
+        if (args.length != 1) {
+            throw new IllegalArgumentException("cd() invalid parametr");
+        }
+        if (args[0] == null) {
+            throw new NullPointerException("1st arg was null");
+        }
+
+
+        FolderNode node;
+        if (args[0].startsWith("/")) {
+            node = fileSystem.getRoot();
+        } else {
+            node = currentDirectory;
+        }
+
+        String[] pathParts = args[0].split("/");
+        for (int i = 0; i < pathParts.length; i++) {
+            String part = pathParts[i];
+
+            if (part.length() == 0 || part.equals(".")) {
+
+            } else if (part.equals("..")) {
+                if (node.getParent() != null) {
+                    node = node.getParent();
+                }
+            } else {
+                FileSystemNode child = node.getChildByName(part);
+                if (child == null || child.isFolder() == false) {
+                    return;
+                } else {
+                    node = (FolderNode) child;
+                }
+            }
+        }
+        currentDirectory = node;
     }
+
+    // public String splitPaths(String path) {
+    // for (int index = 0; index < path.length(); index++) {
+    // if (path.substring(index, index + 1) == "/") {
+    // return path.substring(index + 1, path.length());
+    // }
+    // }
+    // return "";
+    // }
 
     /**
      * Lists all items contained directly in the current directory. Output formatting can mirror
@@ -62,8 +103,15 @@ public class Navigator {
     private void ls(String[] args) {
         List<FileSystemNode> children = currentDirectory.getChildren();
         for (int i = 0; i < children.size(); i++) {
-            System.out.println(children.get(i).getName());
+            if (children.get(i).isFolder()) {
+                System.out.println(children.get(i).getName() + "/");
+            } else {
+                System.out.println(children.get(i).getName());
+            }
+
         }
+
+
 
     }
 
@@ -71,6 +119,9 @@ public class Navigator {
      * Creates a new directory inside the current directory using the provided name.
      */
     private void mkdir(String[] args) {
+        if (args == null || args.length != 1 || args[0] == null) {
+            throw new IllegalArgumentException();
+        }
         // read folder name from args and delegate to currentDirectory.addFolder(...)
         currentDirectory.addFolder(args[0]);
     }
@@ -79,8 +130,8 @@ public class Navigator {
      * Creates a new file inside the current directory with a given name and size.
      */
     private void touch(String[] args) {
-        if (args.length != 2) {
-            throw new NullPointerException("touch() invalid args");
+        if (args == null || args.length != 2 || args[0] == null || args[1] == null) {
+            throw new IllegalArgumentException();
         }
         currentDirectory.addFile(args[0], Integer.parseInt(args[1]));
     }
@@ -105,15 +156,16 @@ public class Navigator {
             System.out.println(child.toString());
         }
     }
-    
-    private void makePathList(FolderNode tempDirectory, String targetName, ArrayList<String> pathList) {
-        List<FileSystemNode> tempChildren =  tempDirectory.getChildren();
+
+    private void makePathList(FolderNode tempDirectory, String targetName,
+            ArrayList<String> pathList) {
+        List<FileSystemNode> tempChildren = tempDirectory.getChildren();
         for (int i = 0; i < tempChildren.size(); i++) {
             if (tempChildren.get(i).isFolder()) {
-                FolderNode tempChild =  (FolderNode) tempChildren.get(i);
+                FolderNode tempChild = (FolderNode) tempChildren.get(i);
                 makePathList(tempChild, targetName, pathList);
             } else if (tempChildren.get(i).getName().equals(targetName)) {
-                pathList.add(tempChildren.get(i).getName().toString());
+                pathList.add(tempChildren.get(i).toString());
             }
         }
     }
@@ -130,7 +182,28 @@ public class Navigator {
      * depth limits if provided by the arguments.
      */
     private void tree(String[] args) {
-        // TODO: implement tree-style printing with indentation and branch characters
+        List<FileSystemNode> children = currentDirectory.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            printTree(children.get(i), "");
+        }
+    }
+
+    private void printTree(FileSystemNode node, String tabsOver) {
+        System.out.println(tabsOver + "|---" + node.getName());
+
+        if (node.isFolder()) {
+            FolderNode folder = (FolderNode) node;
+            List<FileSystemNode> kids = folder.getChildren();
+            for (int i = 0; i < kids.size(); i++) {
+                String nextTabsOver;
+                if (tabsOver.equals("")) {
+                    nextTabsOver = "|   ";
+                } else {
+                    nextTabsOver = tabsOver + "    ";
+                }
+                printTree(kids.get(i), nextTabsOver);
+            }
+        }
     }
 
     /**
@@ -138,7 +211,7 @@ public class Navigator {
      * subdirectories.
      */
     private void count(String[] args) {
-        System.out.println(currentDirectory.getTotalNodeCount());
+        System.out.println(currentDirectory.getTotalNodeCount() - 1);
     }
 
     /**
