@@ -9,12 +9,14 @@ public class BinarySearchTester {
         binarySearchTree.add(9);
         binarySearchTree.add(7);
         binarySearchTree.add(3);
-        binarySearchTree.add(5);
-        binarySearchTree.add(21);
-        binarySearchTree.add(11);
-        binarySearchTree.add(67676767);
+        // binarySearchTree.add(5);
+        // binarySearchTree.add(21);
+        // binarySearchTree.add(11);
+        // binarySearchTree.add(67676767);
         // System.out.println(binarySearchTree.toString());
         // System.out.println("3");
+        System.out.println(binarySearchTree.toString());
+        System.out.println(binarySearchTree.remove(7));
         System.out.println(binarySearchTree.toString());
         
     }

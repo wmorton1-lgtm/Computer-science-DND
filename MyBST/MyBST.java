@@ -19,12 +19,12 @@ public class MyBST<E extends Comparable<E>> {
 
 	// Returns true if this BST contains value; otherwise returns false.
 	public boolean contains(E value) {
-		return toString().contains(value.toString());
+		return findNodeToRemove(root, value) != null;
 	}
 
 	// Adds value to this BST, unless this tree already holds value.
 	// Returns true if value has been added; otherwise returns false.
-	public void reBalance(String
+
 	public boolean add(E value) {
 		if (root == null) {
 			BinaryNode<E> toAdd = new BinaryNode<E>(value);
@@ -65,36 +65,135 @@ public class MyBST<E extends Comparable<E>> {
 		}
 	}
 
-	
+
+
+	// Smallest node in the right subtree
+	public BinaryNode<E> findNodeToRemove(BinaryNode<E> current, E value) {
+		if (current == null) {
+			return null;
+		}
+		if (current.getValue().equals(value)) {
+			return current;
+		} else if (current.getValue().compareTo(value) > 0) {
+			return findNodeToRemove(current.getLeft(), value);
+		} else {
+			// (current.getValue().compareTo(value) < 0)
+			return findNodeToRemove(current.getRight(), value);
+		}
+	}
 
 	// Removes value from this BST. Returns true if value has been
 	// found and removed; otherwise returns false.
 	// If removing a node with two children: replace it with the
-	// largest node in the right subtree
 	public boolean remove(E value) {
+		BinaryNode<E> toRemove = findNodeToRemove(root, value);
+		if (toRemove == null) {
+			return false;
+		}
+		removeHelper(toRemove);
+		if (root != null) {
+			root.setParent(null);
+		}
+		return true;
+	}
+
+	public void removeHelper(BinaryNode<E> toBeRemoved) {
+		if (toBeRemoved.isLeaf()) {
+			removeLeaf(toBeRemoved);
+		} else if (toBeRemoved.getRight() == null) {
+			removeNodeIfOnlyHasLeftChildren(toBeRemoved);
+		} else if (toBeRemoved.getLeft() == null) {
+			removeNodeIfOnlyHasRightChildren(toBeRemoved);
+		} else { // 2 nodes
+			BinaryNode<E> moveValue = minHelper(toBeRemoved.getRight());
+			toBeRemoved.setValue(moveValue.getValue());
+
+			if (moveValue.isLeaf()) {
+				removeLeaf(moveValue);
+			} else {
+				moveValue.getRight().setParent(moveValue.getParent());
+				moveValue.getParent().setLeft(moveValue.getRight());
+			}
+			moveValue.setParent(null);
+		}
+	}
+
+	public boolean isRight(BinaryNode<E> current) {
+		return current.getParent() != null && current == current.getParent().getRight();
+
+	}
+
+	public boolean checkForLeafedRootAndRemove(BinaryNode<E> toRemove) {
+		if (toRemove.getParent() == null) {
+			root = null;
+			return true;
+		}
 		return false;
 	}
 
-	// Returns the minimum in the tree
-	public E min() {
-		return minHelper(root);
+	public void removeLeaf(BinaryNode<E> toRemove) {
+		if (toRemove.getParent()==null) {
+			toRemove = null;
+			return;
+		}
+		if (isRight(toRemove)) {
+			toRemove.getParent().setRight(null);
+		} else {
+			toRemove.getParent().setLeft(null);
+		}
+		toRemove.setParent(null);
 	}
 
-	public E minHelper(BinaryNode<E> current) {
+	public void removeNodeIfOnlyHasLeftChildren(BinaryNode<E> toRemove) {
+		checkForLeafedRootAndRemove(toRemove);
+		BinaryNode<E> replacementNode = toRemove.getLeft();
+		toRemove.setLeft(replacementNode.getLeft());
+		toRemove.setRight(replacementNode.getRight());
+		if (replacementNode.getLeft() != null) {
+			replacementNode.getLeft().setParent(toRemove);
+		}
+		if (replacementNode.getRight() != null) {
+			replacementNode.getRight().setParent(toRemove);
+		}
+		toRemove.setValue(replacementNode.getValue());
+	}
+
+	public void removeNodeIfOnlyHasRightChildren(BinaryNode<E> toRemove) {
+		checkForLeafedRootAndRemove(toRemove);
+		BinaryNode<E> replacementNode = toRemove.getRight();
+		toRemove.setRight(replacementNode.getRight());
+		toRemove.setLeft(replacementNode.getLeft());
+		if (replacementNode.getLeft() != null) {
+			replacementNode.getLeft().setParent(toRemove);
+		}
+		if (replacementNode.getRight() != null) {
+			replacementNode.getRight().setParent(toRemove);
+		}
+		toRemove.setValue(replacementNode.getValue());
+	}
+
+
+
+	// Returns the minimum in the tree
+	public E min() {
+		return minHelper(root).getValue();
+	}
+
+	public BinaryNode<E> minHelper(BinaryNode<E> current) {
 		if (current.getLeft() == null) {
-			return (E) current.getValue();
+			return current;
 		}
 		return minHelper(current.getLeft());
 	}
 
 	// Returns the maximum in the tree.
 	public E max() {
-		return maxHelper(root);
+		return maxHelper(root).getValue();
 	}
 
-	public E maxHelper(BinaryNode<E> current) {
+	public BinaryNode<E> maxHelper(BinaryNode<E> current) {
 		if (current.getRight() == null) {
-			return (E) current.getValue();
+			return current;
 		}
 		return maxHelper(current.getRight());
 	}
@@ -117,7 +216,7 @@ public class MyBST<E extends Comparable<E>> {
 
 		BinaryNode<E> left = currentNode.getLeft();
 		BinaryNode<E> right = currentNode.getRight();
-		
+
 		builder.append(rightUpperLeft(left));
 		builder.append(currentNode.getValue().toString()).append(", ");
 		builder.append(rightUpperLeft(right));
