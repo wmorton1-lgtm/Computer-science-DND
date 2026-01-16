@@ -14,14 +14,17 @@ public class MyBST<E extends Comparable<E>> {
 	}
 
 	public int getHeight() {
+		if (root ==null) {
+			return -1;
+		}
 		return root.getHeight();
 	}
 
 	// Returns true if this BST contains value; otherwise returns false.
 	public boolean contains(E value) {
-		// if (root == null) {
-		// return false;
-		// }
+		if (value == null) {
+			return false;
+		}
 		return findNode(root, value) != null;
 	}
 
@@ -29,15 +32,21 @@ public class MyBST<E extends Comparable<E>> {
 	// Returns true if value has been added; otherwise returns false.
 
 	public boolean add(E value) {
+		if (value == null) {
+			return false;
+		}
 		if (root == null) {
 			BinaryNode<E> toAdd = new BinaryNode<E>(value);
 			root = toAdd;
+			root.setHeight(0);
 			return true;
 		}
 		if (this.contains(value)) {
 			return false;
 		}
-		return addHelper(root, value);
+		boolean didAdd= addHelper(root, value);
+		fixHeights();
+		return didAdd;
 	}
 
 	public boolean addHelper(BinaryNode<E> currNode, E value) {
@@ -90,6 +99,9 @@ public class MyBST<E extends Comparable<E>> {
 	// found and removed; otherwise returns false.
 	// If removing a node with two children: replace it with the
 	public boolean remove(E value) {
+		if (value ==null) {
+			return false;
+		}
 		if (!contains(value)) {
 			return false;
 		}
@@ -98,6 +110,7 @@ public class MyBST<E extends Comparable<E>> {
 		if (root != null) {
 			root.setParent(null);
 		}
+		fixHeights();
 		return true;
 	}
 
@@ -116,31 +129,23 @@ public class MyBST<E extends Comparable<E>> {
 				removeLeaf(moveValue);
 			} else { // will have only right children
 				moveValue.getRight().setParent(moveValue.getParent());
-				moveValue.getParent().setLeft(moveValue.getRight());
+				if (isRight(moveValue)) {
+					moveValue.getParent().setRight(moveValue.getRight());
+				} else {
+					moveValue.getParent().setLeft(moveValue.getRight());
+				}
 			}
 			moveValue.setParent(null);
 		}
 	}
-
-	// public void moveNode(BinaryNode<E> toBeReplaced, BinaryNode<E> goingToReplace) {
-
-	// }
 
 	public boolean isRight(BinaryNode<E> current) {
 		return current.getParent() != null && current == current.getParent().getRight();
 
 	}
 
-	// public boolean checkForLeafedRootAndRemove(BinaryNode<E> toRemove) {
-	// if (toRemove.getParent() == null) {
-	// root = null;
-	// return true;
-	// }
-	// return false;
-	// }
-
 	public void removeLeaf(BinaryNode<E> toRemove) {
-		if (toRemove.getParent() == null || toRemove.getValue().equals(root.getValue())) {
+		if (toRemove.getParent() == null) {
 			root = null;
 			return;
 		}
@@ -152,31 +157,27 @@ public class MyBST<E extends Comparable<E>> {
 		toRemove.setParent(null);
 	}
 
-	public void removeNodeIfOnlyHasLeftChildren(BinaryNode<E> toRemove) {// Todo:fix left thing
-		BinaryNode<E> replacementNode = null;
+	public void removeNodeIfOnlyHasLeftChildren(BinaryNode<E> toRemove) {
+		BinaryNode<E> replacementNode;
 		if (toRemove.getLeft().isLeaf()) {
 			replacementNode = toRemove.getLeft();
 		} else {
 			replacementNode = maxHelper(toRemove.getLeft());
 		}
-		// toRemove.setLeft(replacementNode.getLeft());
-		// toRemove.setRight(replacementNode.getRight());
-		// if (replacementNode.getLeft() != null) {
-		// replacementNode.getLeft().setParent(toRemove);
-		// }
-		// if (replacementNode.getRight() != null) {
-		// replacementNode.getRight().setParent(toRemove);
-		// }
 		if (replacementNode.getLeft() != null) {
 			replacementNode.getLeft().setParent(replacementNode.getParent());
 			if (!isRight(replacementNode)) {
-				replacementNode.getParent().setRight(replacementNode.getRight());
+				replacementNode.getParent().setLeft(replacementNode.getLeft());
 			} else {
-				replacementNode.getParent().setLeft(replacementNode.getRight());
+				replacementNode.getParent().setRight(replacementNode.getLeft());
 			}
 			replacementNode.setLeft(null);
 		} else {
-			replacementNode.getParent().setRight(null);
+			if (isRight(replacementNode)) {
+				replacementNode.getParent().setRight(null);
+			} else {
+				replacementNode.getParent().setLeft(null);
+			}
 		}
 		replacementNode.setParent(null);
 		toRemove.setValue(replacementNode.getValue());
@@ -198,7 +199,11 @@ public class MyBST<E extends Comparable<E>> {
 			}
 			replacementNode.setRight(null);
 		} else {
-			replacementNode.getParent().setLeft(null);
+			if (isRight(replacementNode)) {
+				replacementNode.getParent().setRight(null);
+			} else {
+				replacementNode.getParent().setLeft(null);
+			}
 		}
 		replacementNode.setParent(null);
 		toRemove.setValue(replacementNode.getValue());
@@ -209,6 +214,9 @@ public class MyBST<E extends Comparable<E>> {
 
 	// Returns the minimum in the tree
 	public E min() {
+		if (root == null) {
+			return null;
+		}
 		return minHelper(root).getValue();
 	}
 
@@ -221,6 +229,9 @@ public class MyBST<E extends Comparable<E>> {
 
 	// Returns the maximum in the tree.
 	public E max() {
+		if (root == null) {
+			return null;
+		}
 		return maxHelper(root).getValue();
 	}
 
@@ -229,6 +240,33 @@ public class MyBST<E extends Comparable<E>> {
 			return current;
 		}
 		return maxHelper(current.getRight());
+	}
+
+	public void fixHeights() {
+		if (root == null) {
+			return;
+		}
+
+		root.setParent(null);
+		root.setHeight(0);
+		fixHeightsHelper(root);
+	}
+
+	public void fixHeightsHelper(BinaryNode<E> current) {
+		if (current == null) {
+			return;
+		}
+
+		if (current.getLeft() != null) {
+			current.getLeft().setParent(current);
+			current.getLeft().setHeight(current.getHeight() + 1);
+			fixHeightsHelper(current.getLeft());
+		}
+		if (current.getRight() != null) {
+			current.getRight().setParent(current);
+			current.getRight().setHeight(current.getHeight() + 1);
+			fixHeightsHelper(current.getRight());
+		}
 	}
 
 	// Returns a bracket-surrounded, comma separated list of the contents of the nodes, in order
