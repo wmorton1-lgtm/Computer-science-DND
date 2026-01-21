@@ -14,7 +14,7 @@ public class MyBST<E extends Comparable<E>> {
 	}
 
 	public int getHeight() {
-		if (root ==null) {
+		if (root == null) {
 			return -1;
 		}
 		return root.getHeight();
@@ -44,7 +44,7 @@ public class MyBST<E extends Comparable<E>> {
 		if (this.contains(value)) {
 			return false;
 		}
-		boolean didAdd= addHelper(root, value);
+		boolean didAdd = addHelper(root, value);
 		fixHeights();
 		return didAdd;
 	}
@@ -99,7 +99,7 @@ public class MyBST<E extends Comparable<E>> {
 	// found and removed; otherwise returns false.
 	// If removing a node with two children: replace it with the
 	public boolean remove(E value) {
-		if (value ==null) {
+		if (value == null) {
 			return false;
 		}
 		if (!contains(value)) {
