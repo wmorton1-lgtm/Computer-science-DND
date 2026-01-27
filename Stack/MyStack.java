@@ -58,6 +58,7 @@ public class MyStack<E extends Comparable<E>> {
 
     public boolean push(E obj) {
         internaList.addLast(obj);
+        empty = false;
         return true;
     }
 
@@ -67,6 +68,7 @@ public class MyStack<E extends Comparable<E>> {
         }
         E toReturn = peek();
         internaList.removeLast();
+        empty = internaList.isEmpty();
         return toReturn;
     }
 
