@@ -44,10 +44,13 @@ public class CookieMonster {
 
 	// You may find it VERY helpful to write this helper method. Or not!
 	private boolean validPoint(int row, int col) {
+		if (row < 0 || col < 0) {
+			return false;
+		}
 		if (numCols == col) {
 			return false;
 		}
-		if (numCols == row) { // row will be 1
+		if (numRows == row) { // row will be 1 mmore than col
 			return false;
 		}
 		if (cookieGrid[row][col] == -1) {
@@ -61,31 +64,27 @@ public class CookieMonster {
 	 * cookies attainable.
 	 */
 	public int recursiveCookies() {
+		if (!validPoint(0, 0)) {
+			return 0;
+		}
 		return recursiveCookies(0, 0);
 	}
 
 	// Returns the maximum number of cookies edible starting from (and including)
 	// cookieGrid[row][col]
 	public int recursiveCookies(int row, int col) {
-		if (row == numRows - 1) {
-			return cookieGrid[row][col];
-		}
-		if (col == numCols - 1) {
-			return cookieGrid[row][col];
-		}
 		int totalRight = 0;
 		int totalDown = 0;
+		if (!validPoint(row + 1, col) && !validPoint(row, col + 1)) {
+			return cookieGrid[row][col];
+		}
 		if (validPoint(row + 1, col)) {
-			totalDown += cookieGrid[row][col];
-			totalDown = recursiveCookies(row + 1, col);
-
-		} 
+			totalDown += recursiveCookies(row + 1, col) + cookieGrid[row][col];
+		}
 		if (validPoint(row, col + 1)) {
-			totalRight += cookieGrid[row][col];
-			totalRight = recursiveCookies(row, col + 1);
-
-		} 
-		return Math.max(totalRight, totalDown) + cookieGrid[row][col];
+			totalRight += recursiveCookies(row, col + 1) + cookieGrid[row][col];
+		}
+		return Math.max(totalRight, totalDown);
 	}
 
 
@@ -95,8 +94,38 @@ public class CookieMonster {
 	 */
 	/* From any given position, always add the path right before adding the path down */
 	public int queueCookies() {
-		// CODE THIS2
-		return 0;
+		if (!validPoint(0, 0)) {
+			return 0;
+		}
+		Queue<OrphanScout> scoutQueue = new LinkedList<>();
+		OrphanScout originScout = new OrphanScout(0, 0, 0);
+		scoutQueue.offer(originScout);
+		int highestCookies = -000000000;
+		while (!scoutQueue.isEmpty()) {
+			OrphanScout currentScout = scoutQueue.peek();
+			int parentRow = currentScout.getEndingRow();
+			int parentCol = currentScout.getEndingCol();
+			if (!validPoint(parentRow + 1, parentCol + 1)) {
+				continue;
+			}
+			if (validPoint(parentRow + 1, parentCol)) {
+				OrphanScout childScout = new OrphanScout(parentRow, parentCol + 1,
+						currentScout.getCookiesDiscovered());
+				scoutQueue.add(childScout);
+			}
+			if (validPoint(parentRow, parentCol + 1)) {
+				OrphanScout childScout = new OrphanScout(parentRow + 1, parentCol,
+						currentScout.getCookiesDiscovered());
+				scoutQueue.add(childScout);
+			}
+			if (currentScout.getCookiesDiscovered() > highestCookies) {
+				highestCookies = currentScout.getCookiesDiscovered();
+			}
+		}
+		if (highestCookies < 0) {
+			highestCookies = 0;
+		}
+		return highestCookies;
 	}
 
 
@@ -106,8 +135,11 @@ public class CookieMonster {
 	 */
 	/* From any given position, always add the path right before adding the path down */
 	public int stackCookies() {
+		if (!validPoint(0, 0)) {
+			return 0;
+		}
 		// CODE THIS
-		return 0;
+		return 67676767;
 	}
 
 }
