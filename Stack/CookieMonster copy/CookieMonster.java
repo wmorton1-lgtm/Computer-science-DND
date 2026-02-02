@@ -101,6 +101,7 @@ public class CookieMonster {
 		OrphanScout originScout = new OrphanScout(0, 0, 0);
 		scoutQueue.offer(originScout);
 		int highestCookies = 0;
+
 		while (!scoutQueue.isEmpty()) {
 			OrphanScout currentScout = scoutQueue.peek();
 			int parentRow = currentScout.getEndingRow();
@@ -121,11 +122,11 @@ public class CookieMonster {
 			if (currentScout.getCookiesDiscovered() > highestCookies) {
 				highestCookies = currentScout.getCookiesDiscovered();
 			}
-			// scoutQueue.poll();
+			scoutQueue.poll();
 		}
-		if (highestCookies < 0) {
-			highestCookies = 0;
-		}
+		// if (highestCookies < 0) {
+		// 	highestCookies = 0;
+		// }
 		return highestCookies + cookieGrid[0][0];
 	}
 
@@ -139,35 +140,35 @@ public class CookieMonster {
 		if (!validPoint(0, 0)) {
 			return 0;
 		}
-		Stack<OrphanScout> scoutStack = new Stack<>();
-		OrphanScout originScout = new OrphanScout(0, 0, cookieGrid[0][0]);
+		Stack<OrphanScout> scoutStack = new Stack<OrphanScout>();
+		OrphanScout originScout = new OrphanScout(0, 0, 0);
 		scoutStack.push(originScout);
-		int highestCookies = cookieGrid[0][0];
+		int highestCookies = 0;
+
 		while (!scoutStack.isEmpty()) {
-			OrphanScout currentScout = scoutStack.peek();
+			OrphanScout currentScout = scoutStack.pop();
 			int parentRow = currentScout.getEndingRow();
 			int parentCol = currentScout.getEndingCol();
 			// if (!validPoint(parentRow + 1, parentCol + 1)) {
-			// continue;
+			// 	continue;
 			// }
 			if (validPoint(parentRow + 1, parentCol)) {
 				OrphanScout childScout = new OrphanScout(parentRow + 1, parentCol,
-						currentScout.getCookiesDiscovered());
-				scoutStack.add(childScout);
+						currentScout.getCookiesDiscovered() + cookieGrid[parentRow + 1][parentCol]);
+				scoutStack.push(childScout);
 			}
 			if (validPoint(parentRow, parentCol + 1)) {
 				OrphanScout childScout = new OrphanScout(parentRow, parentCol + 1,
-						currentScout.getCookiesDiscovered());
-				scoutStack.add(childScout);
+						currentScout.getCookiesDiscovered() + cookieGrid[parentRow][parentCol + 1]);
+				scoutStack.push(childScout);
 			}
 			if (currentScout.getCookiesDiscovered() > highestCookies) {
 				highestCookies = currentScout.getCookiesDiscovered();
 			}
-			scoutStack.pop();
 		}
-		if (highestCookies < 0) {
-			highestCookies = 0;
-		}
-		return highestCookies;
+		// if (highestCookies < 0) {
+		// 	highestCookies = 0;
+		// }
+		return highestCookies + cookieGrid[0][0];
 	}
 }
