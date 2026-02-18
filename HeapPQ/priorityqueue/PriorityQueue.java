@@ -1,5 +1,5 @@
-
-public interface MyPriorityQueue<E extends Comparable<E>> {
+package priorityqueue;
+public interface PriorityQueue<E extends Comparable<E>> {
 
 	//Adds obj to the Priority Queue
 	public void add(E obj);

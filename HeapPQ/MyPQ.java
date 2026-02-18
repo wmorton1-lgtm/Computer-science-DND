@@ -1,10 +1,10 @@
 
-public class HeapPQ<E extends Comparable<E>> implements MyPQ2<E> {
+public class MyPQ<E extends Comparable<E>> {
 
 	private E[] heap;
 	private int objectCount;
 
-	public HeapPQ() {
+	public MyPQ() {
 		this.heap = (E[]) new Comparable[3];
 		this.objectCount = 0;
 	}
@@ -140,7 +140,7 @@ public class HeapPQ<E extends Comparable<E>> implements MyPQ2<E> {
 		}
 	}
 
-	@Override
+	
 	public void add(E obj) {
 		if (obj == null) {
 			return;
@@ -153,7 +153,7 @@ public class HeapPQ<E extends Comparable<E>> implements MyPQ2<E> {
 		bubbleUp(objectCount - 1);
 	}
 
-	@Override
+	
 	public E removeMin() {
 		if (isEmpty()) {
 			throw new IndexOutOfBoundsException("removeMin() heap empty");
@@ -169,7 +169,7 @@ public class HeapPQ<E extends Comparable<E>> implements MyPQ2<E> {
 		return toReturn;
 	}
 
-	@Override
+	
 	public E peek() {
 		if (isEmpty()) {
 			throw new IndexOutOfBoundsException("peek() heap empty");
@@ -177,7 +177,7 @@ public class HeapPQ<E extends Comparable<E>> implements MyPQ2<E> {
 		return heap[0];
 	}
 
-	@Override
+	
 	public boolean isEmpty() {
 		return objectCount == 0;
 	}
