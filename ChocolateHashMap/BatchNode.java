@@ -1,11 +1,9 @@
 /**
  * Represents a node of a circular DOUBLY-linked list.
  *
- * In ChocolateHashMap, each bucket is a circular doubly-linked list that begins with
- * a sentinel BatchNode. For a sentinel node:
- *   - entry == null
- *   - previous points to itself
- *   - next points to itself
+ * In ChocolateHashMap, each bucket is a circular doubly-linked list that begins with a sentinel
+ * BatchNode. For a sentinel node: - entry == null - previous points to itself - next points to
+ * itself
  *
  * Non-sentinel nodes hold an actual entry.
  */
@@ -35,21 +33,40 @@ public class BatchNode<E> {
         this.isSentinel = true;
     }
 
-    public E getEntry() { return entry; }
-    public BatchNode<E> getPrevious() { return previous; }
-    public BatchNode<E> getNext() { return next; }
-    public boolean isSentinel() { return isSentinel; }
+    public E getEntry() {
+        return entry;
+    }
 
-    public void setEntry(E entry) { this.entry = entry; }
-    public void setPrevious(BatchNode<E> previous) { this.previous = previous; }
-    public void setNext(BatchNode<E> next) { this.next = next; }
+    public BatchNode<E> getPrevious() {
+        return previous;
+    }
+
+    public BatchNode<E> getNext() {
+        return next;
+    }
+
+    public boolean isSentinel() {
+        return isSentinel;
+    }
+
+    public void setEntry(E entry) {
+        this.entry = entry;
+    }
+
+    public void setPrevious(BatchNode<E> previous) {
+        this.previous = previous;
+    }
+
+    public void setNext(BatchNode<E> next) {
+        this.next = next;
+    }
 
     // --- Optional helper operations ---
     // These helpers are here so you can focus on hashing logic instead of pointer bookkeeping.
 
     /**
-     * Inserts newNode immediately BEFORE this node.
-     * Example: sentinel.insertBefore(newNode) appends to the end of the list.
+     * Inserts newNode immediately BEFORE this node. Example: sentinel.insertBefore(newNode) appends
+     * to the end of the list.
      */
     public void insertBefore(BatchNode<E> newNode) {
         BatchNode<E> prev = this.previous;
@@ -63,7 +80,8 @@ public class BatchNode<E> {
      * Removes this node from its list (no-op if this node is a sentinel).
      */
     public void unlink() {
-        if (this.isSentinel) return;
+        if (this.isSentinel)
+            return;
 
         BatchNode<E> prev = this.previous;
         BatchNode<E> nxt = this.next;

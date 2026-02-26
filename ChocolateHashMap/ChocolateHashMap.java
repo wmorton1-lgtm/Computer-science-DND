@@ -51,13 +51,12 @@ public class ChocolateHashMap<K, V> {
     // NOTE: Math.abs(Integer.MIN_VALUE) is still negative. Consider masking the sign bit.
     private int whichBucket(K key) {
         // return (key.hashCode() % (buckets.length / 2)) + buckets.length;
-        return (key.hashCode() % buckets.length) + (buckets.length / 2);
+        return ((key.hashCode() % buckets.length) + (buckets.length)) / 2;
     }
 
     // Returns the current load factor (objCount / buckets)
     public double currentLoadFactor() {
         return objectCount / buckets.length;
-
     }
 
     // Return true if the key exists as a key in the map, otherwise false.
@@ -79,7 +78,8 @@ public class ChocolateHashMap<K, V> {
     // Use the .equals method to check equality.
     public boolean containsValue(V value) {
         for (int i = 0; i < buckets.length; i++) {
-            for (BatchNode index = buckets[i].getNext(); !index.isSentinel(); index = index.getNext()) {
+            for (BatchNode index = buckets[i].getNext(); !index.isSentinel(); index =
+                    index.getNext()) {
                 if (buckets[i].getEntry().getValue().equals(value)) {
                     return true;
                 }
@@ -95,8 +95,18 @@ public class ChocolateHashMap<K, V> {
     // After adding the pair, check if the load factor is greater than the limit.
     // - If so, you must call rehash with double the current bucket size.
     public boolean put(K key, V value) {
-        // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement put");
+        if (containsKey(key)) {
+            return false;
+        }
+        ChocolateEntry entryToAdd = new ChocolateEntry(key, value);
+        BatchNode nodeToAdd = new BatchNode(entryToAdd);
+        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
+            if (i.isSentinel()) {
+                i.insertBefore(nodeToAdd);
+            }
+        }
+        objectCount++;
+        return true;
     }
 
     // Returns the value associated with the key in the map.
@@ -107,7 +117,7 @@ public class ChocolateHashMap<K, V> {
         }
         for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
             if (buckets[whichBucket(key)].getEntry().getKey().equals(key)) {
-               return buckets[whichBucket(key)].getEntry().getValue();
+                return buckets[whichBucket(key)].getEntry().getValue();
             }
         }
         return null;
@@ -116,8 +126,18 @@ public class ChocolateHashMap<K, V> {
     // Remove the pair associated with the key.
     // Return true if successful, false if the key did not exist.
     public boolean remove(K key) {
-        // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement remove");
+        if (!containsKey(key)) {
+            return false;
+        }
+        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
+            if (buckets[whichBucket(key)].getEntry().getKey().equals(key)) {
+                i.getNext().setPrevious(i.getPrevious());
+                i.getPrevious().setNext(i.getNext());
+                objectCount++;
+                return true;
+            }
+        }
+        return false;
     }
 
     // Rehash the map so that it contains the given number of buckets
@@ -126,8 +146,16 @@ public class ChocolateHashMap<K, V> {
     // I.e. if a bucket originally has (sentinel)->J->Z->K, then J will be rehashed first,
     // followed by Z, then K.
     public void rehash(int newBucketCount) {
-        // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement rehash");
+        ChocolateHashMap<K, V> newSized = new ChocolateHashMap<K, V>(newBucketCount, 0.75);
+        // fillArrayWithSentinels(newSized);
+
+        for (int index = 0; index < buckets.length; index++) {
+            for (BatchNode<ChocolateEntry<K, V>> currentNode =
+                    buckets[index].getNext(); !currentNode.isSentinel(); currentNode =
+                            currentNode.getNext()) {
+                newSized.put(currentNode.getEntry().getKey(), currentNode.getEntry().getValue());
+            }
+        }
     }
 
     // The output should be in the following format:

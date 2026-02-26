@@ -44,12 +44,6 @@ public class ChocolateEntry<K, V> {
         return this.value.equals(other.value);
     }
 
-    @Override
-    public int hashCode() {
-        int result = (key == null) ? 0 : key.hashCode();
-        result = 31 * result + ((value == null) ? 0 : value.hashCode());
-        return result;
-    }
 
     @Override
     public String toString() {
