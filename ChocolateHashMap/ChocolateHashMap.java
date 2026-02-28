@@ -50,24 +50,35 @@ public class ChocolateHashMap<K, V> {
     // Use .hashCode(), but be aware that hashCode can return negative numbers!
     // NOTE: Math.abs(Integer.MIN_VALUE) is still negative. Consider masking the sign bit.
     private int whichBucket(K key) {
+        if (key == null) {
+            throw new NullPointerException("whichbucket() key was null");
+        }
         // return (key.hashCode() % (buckets.length / 2)) + buckets.length;
-        return ((key.hashCode() % buckets.length) + (buckets.length)) / 2;
+        int index = (key.hashCode() % buckets.length);
+        if (index < 0) {
+            return index + buckets.length;
+        }
+        return index;
     }
 
     // Returns the current load factor (objCount / buckets)
     public double currentLoadFactor() {
-        return objectCount / buckets.length;
+        return (double) objectCount / buckets.length;
     }
 
     // Return true if the key exists as a key in the map, otherwise false.
     // Use the .equals method to check equality.
     public boolean containsKey(K key) {
+        if (key == null) {
+            throw new NullPointerException("containsKey() key was null");
+        }
         // return buckets[whichBucket(key)].getEntry().getKey().equals(key);
         if (buckets[whichBucket(key)].getNext().isSentinel()) {
             return false;
         }
-        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
-            if (buckets[whichBucket(key)].getEntry().getKey().equals(key)) {
+        for (BatchNode<ChocolateEntry<K, V>> i = buckets[whichBucket(key)].getNext(); !i
+                .isSentinel(); i = i.getNext()) {
+            if (i.getEntry().getKey().equals(key)) {
                 return true;
             }
         }
@@ -78,10 +89,16 @@ public class ChocolateHashMap<K, V> {
     // Use the .equals method to check equality.
     public boolean containsValue(V value) {
         for (int i = 0; i < buckets.length; i++) {
-            for (BatchNode index = buckets[i].getNext(); !index.isSentinel(); index =
-                    index.getNext()) {
-                if (buckets[i].getEntry().getValue().equals(value)) {
-                    return true;
+            for (BatchNode<ChocolateEntry<K, V>> currentNode = buckets[i].getNext(); !currentNode
+                    .isSentinel(); currentNode = currentNode.getNext()) {
+                if (value == null) {
+                    if (currentNode.getEntry().getValue() == value) {
+                        return true;
+                    }
+                } else {
+                    if (currentNode.getEntry().getValue().equals(value)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -95,29 +112,41 @@ public class ChocolateHashMap<K, V> {
     // After adding the pair, check if the load factor is greater than the limit.
     // - If so, you must call rehash with double the current bucket size.
     public boolean put(K key, V value) {
+        if (key == null) {
+            throw new NullPointerException("put() key was null");
+        }
         if (containsKey(key)) {
             return false;
         }
-        ChocolateEntry entryToAdd = new ChocolateEntry(key, value);
-        BatchNode nodeToAdd = new BatchNode(entryToAdd);
-        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
-            if (i.isSentinel()) {
-                i.insertBefore(nodeToAdd);
-            }
-        }
+
+       
+
+        ChocolateEntry<K, V> entryToAdd = new ChocolateEntry<>(key, value);
+        BatchNode<ChocolateEntry<K, V>> nodeToAdd = new BatchNode<>(entryToAdd);
+
+        buckets[whichBucket(key)].insertBefore(nodeToAdd);
+        
         objectCount++;
+
+        if (currentLoadFactor() > loadFactorLimit) {
+            rehash(buckets.length * 2);
+        }
+        
         return true;
     }
 
     // Returns the value associated with the key in the map.
     // If the key is not in the map, then return null.
     public V get(K key) {
-        if (!containsKey(key)) {
-            return null;
+        if (key == null) {
+            throw new NullPointerException("get() key was null");
         }
-        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
-            if (buckets[whichBucket(key)].getEntry().getKey().equals(key)) {
-                return buckets[whichBucket(key)].getEntry().getValue();
+        // if (!containsKey(key)) {
+        //     return null;
+        // }
+        for (BatchNode<ChocolateEntry<K, V>> i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
+            if (i.getEntry().getKey().equals(key)) {
+                return i.getEntry().getValue();
             }
         }
         return null;
@@ -126,14 +155,16 @@ public class ChocolateHashMap<K, V> {
     // Remove the pair associated with the key.
     // Return true if successful, false if the key did not exist.
     public boolean remove(K key) {
+        if (key == null) {
+            throw new NullPointerException("remove() key was null");
+        }
         if (!containsKey(key)) {
             return false;
         }
-        for (BatchNode i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
-            if (buckets[whichBucket(key)].getEntry().getKey().equals(key)) {
-                i.getNext().setPrevious(i.getPrevious());
-                i.getPrevious().setNext(i.getNext());
-                objectCount++;
+        for (BatchNode<ChocolateEntry<K, V>> i = buckets[whichBucket(key)].getNext(); !i.isSentinel(); i = i.getNext()) {
+            if (i.getEntry().getKey().equals(key)) {
+                i.unlink();
+                objectCount--;
                 return true;
             }
         }
@@ -146,14 +177,22 @@ public class ChocolateHashMap<K, V> {
     // I.e. if a bucket originally has (sentinel)->J->Z->K, then J will be rehashed first,
     // followed by Z, then K.
     public void rehash(int newBucketCount) {
-        ChocolateHashMap<K, V> newSized = new ChocolateHashMap<K, V>(newBucketCount, 0.75);
-        // fillArrayWithSentinels(newSized);
+        if (newBucketCount <= buckets.length) {
+            throw new IllegalArgumentException("whichbucket() newBucketCount was too small");
+        }
 
-        for (int index = 0; index < buckets.length; index++) {
+        BatchNode<ChocolateEntry<K, V>>[] oldBuckets = buckets;
+        BatchNode<ChocolateEntry<K, V>>[] newSized = (BatchNode<ChocolateEntry<K, V>>[]) new BatchNode[newBucketCount];
+        fillArrayWithSentinels(newSized);
+        buckets = newSized;
+        int oldCount = objectCount;
+        objectCount = 0;
+
+        for (int index = 0; index < oldBuckets.length; index++) {
             for (BatchNode<ChocolateEntry<K, V>> currentNode =
-                    buckets[index].getNext(); !currentNode.isSentinel(); currentNode =
+                    oldBuckets[index].getNext(); !currentNode.isSentinel(); currentNode =
                             currentNode.getNext()) {
-                newSized.put(currentNode.getEntry().getKey(), currentNode.getEntry().getValue());
+                put(currentNode.getEntry().getKey(), currentNode.getEntry().getValue());
             }
         }
     }
@@ -168,7 +207,22 @@ public class ChocolateHashMap<K, V> {
     // [ 3, 10 | { b3: LOT-70,DARK LOT-12,MILK } { b7: LOT-99,WHITE } ]
     @Override
     public String toString() {
-        // TODO: implement
-        throw new UnsupportedOperationException("TODO: implement toString");
+        StringBuilder toReturn = new StringBuilder();
+        toReturn.append("[ ").append(objectCount).append(", ").append(buckets.length).append(" |");
+        for (int index = 0; index < buckets.length; index++) {
+            if (buckets[index].getNext().isSentinel()) {
+                continue;
+            }
+            toReturn.append(" { b").append(index).append(":");
+            for (BatchNode<ChocolateEntry<K, V>> currentNode =
+                    buckets[index].getNext(); !currentNode.isSentinel(); currentNode =
+                            currentNode.getNext()) {
+                toReturn.append(" ").append(currentNode.getEntry().getKey()).append(",");
+                toReturn.append(currentNode.getEntry().getValue());
+            }
+            toReturn.append(" }");
+        }
+        return toReturn.append(" ]").toString();
     }
+
 }
