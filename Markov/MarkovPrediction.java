@@ -54,6 +54,9 @@ public class MarkovPrediction {
     // Method to predict the next state given a current state
     public String predictNextState(String currentState) {
         ArrayList<String> possiblities = hashMapOfData.get(currentState);
+        if (possiblities == null || possiblities.size() == 0) {
+            return null;
+        }
         return possiblities.get((int) (Math.random() * possiblities.size()));
     }
 
