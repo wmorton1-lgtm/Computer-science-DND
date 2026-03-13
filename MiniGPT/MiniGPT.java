@@ -1,17 +1,11 @@
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.module.InvalidModuleDescriptorException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.security.auth.DestroyFailedException;
-import javax.security.auth.login.AccountException;
 
 public class MiniGPT {
 
@@ -90,11 +84,18 @@ public class MiniGPT {
     }
 
     public void generateText(String outputFileName, int numChars) {
+        String currentState = makeFirstState(numChars);
         try (Writer writer = new FileWriter(outputFileName)) {
-
+            writer.write(currentState);
+            for (int i = 0; i < numChars; i++) {
+                String toAdd = predictNextState(currentState);
+                writer.write(toAdd);
+                currentState = currentState.substring(1, currentState.length()) + toAdd;
+            }
         } catch (Exception e) {
             System.out.println("NO file name found");
         }
+
     }
 
     public String predictNextState(String currentState) {
