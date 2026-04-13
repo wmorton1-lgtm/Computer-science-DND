@@ -11,11 +11,14 @@ public class MiniGPT {
 
     private HashMap<String, ArrayList<String>> hashMapOfData;
     private String fileName;
+    private int chainOrder;
 
     public MiniGPT(String fileName, int chainOrder) {
+        this.chainOrder = chainOrder;
         this.fileName = fileName;
         hashMapOfData = new HashMap<String, ArrayList<String>>();
-        dataToHashMap(readData(fileName, chainOrder));
+        ArrayList<String[]> data = readData(fileName, chainOrder);
+        dataToHashMap(data);
     }
 
     public ArrayList<String[]> readData(String filePath, int chainOrder) {
@@ -38,9 +41,8 @@ public class MiniGPT {
                     lastXChars.remove(0);
                     lastXChars.add(character);
                 }
-                return data;
             }
-            return null;
+            return data;
         } catch (IOException e) {
             System.err.println("An I/O error occurred: " + e.getMessage());
         }
@@ -70,27 +72,33 @@ public class MiniGPT {
     }
 
     public String makeFirstState(int numChars) {
-        String firstState = "";
+        StringBuilder firstState = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             for (int i = 0; i < numChars; i++) {
                 int charAsInt = reader.read();
+                if (charAsInt == -1) {
+                    break;
+                }
                 char character = (char) charAsInt;
-                firstState += character + "";
+                firstState.append(character);
             }
         } catch (Exception e) {
             System.out.println("FILE NOT found");
         }
-        return firstState;
+        return firstState.toString();
     }
 
     public void generateText(String outputFileName, int numChars) {
-        String currentState = makeFirstState(numChars);
+        String currentState = makeFirstState(chainOrder);
         try (Writer writer = new FileWriter(outputFileName)) {
-            writer.write(currentState);
+            writer.write(currentState);s
             for (int i = 0; i < numChars; i++) {
                 String toAdd = predictNextState(currentState);
+                if (toAdd == null) {
+                    break;
+                }
                 writer.write(toAdd);
-                currentState = currentState.substring(1, currentState.length()) + toAdd;
+                currentState = currentState.substring(1) + toAdd;
             }
         } catch (Exception e) {
             System.out.println("NO file name found");
