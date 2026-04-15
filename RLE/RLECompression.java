@@ -24,34 +24,23 @@ public class RLECompression {
     public static void encode(String fileName) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         PrintWriter pw = new PrintWriter(fileName + ".rle");
-
         char previousChar = (char) br.read();
 
         int count = 1;
         while (br.ready()) {
             char c = (char) br.read();
-
             if (previousChar == c) {
                 count++;
-
-
             } else {
-                if (count == 2) {
-                    pw.print("" + previousChar + previousChar);
-                    count = 1;
-                } else if (count > 1) {
+                if (count > 1) {
                     pw.print("" + previousChar + previousChar + count);
                     count = 1;
                 } else {
-
                     pw.print(c + "");
                 }
-
             }
             previousChar = c;
-
         }
-
         br.close();
         pw.close();
     }
