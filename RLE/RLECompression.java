@@ -25,10 +25,10 @@ public class RLECompression {
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         PrintWriter pw = new PrintWriter(fileName + ".rle");
         char previousChar = (char) br.read();
-
+        char c = 0;
         int count = 1;
         while (br.ready()) {
-            char c = (char) br.read();
+            c = (char) br.read();
             if (previousChar == c) {
                 count++;
             } else {
@@ -36,10 +36,15 @@ public class RLECompression {
                     pw.print("" + previousChar + previousChar + count);
                     count = 1;
                 } else {
-                    pw.print(c + "");
+                    pw.print(previousChar + "");
                 }
             }
             previousChar = c;
+        }
+        if (count > 1) {
+            pw.print("" + previousChar + previousChar + count);
+        } else {
+            pw.print(previousChar + "");
         }
         br.close();
         pw.close();
@@ -51,17 +56,28 @@ public class RLECompression {
         PrintWriter pw = new PrintWriter(fileName.substring(0, fileName.length() - 4));
 
         char previousChar = (char) br.read();
-
+        boolean printLastChar = true;
         while (br.ready()) {
             char c = (char) br.read();
-            if (Character.isDigit(c)) {
-                char toRepeat = (char) br.read();
-                for (int i = 0; i < (int) c; i++) {
-                    pw.print(toRepeat);
+            if (previousChar == c) {
+                int toRepeat = (char) br.read() - '0';
+                for (int i = 0; i < toRepeat; i++) {
+                    pw.print(previousChar);
                 }
+                if (br.ready()) {
+                    previousChar = (char) br.read();
+                } else {
+                    printLastChar = false;
+                }
+
             } else {
-                pw.print(c);
+                pw.print(previousChar);
+                previousChar = c;
             }
+        }
+
+        if (printLastChar == true) {
+            pw.print(previousChar);
         }
 
         br.close();
@@ -85,9 +101,15 @@ public class RLECompression {
         rotations[0] = originalText.toString();
         // TO-DO
         // Now do the Burrows-Wheeler Transform
-
+        for (int index = 1; index < rotations.length; index++) {
+            rotations[index] = rotations[index - 1].substring(1) + rotations[index - 1].charAt(0);
+        }
+        Arrays.sort(rotations);
         // And then write the transformation into a file
         PrintWriter pw = new PrintWriter(fileName + ".bw");
+        for (int i = 0; i < rotations.length; i++) {
+            pw.print(rotations[i].charAt(rotations[i].length() - 1));
+        }
         pw.close();
     }
 
@@ -108,10 +130,40 @@ public class RLECompression {
         }
         // TO-DO
         // Now undo the Burrows-Wheeler transform
+        for (int i = 1; i < originalText.length(); i++) {
+            for (int j = 0; j < reconstructions.length - 1; j++) {
+                for (int k = 0; k < reconstructions.length - 1 - j; k++) {
+                    if (reconstructions[k].toString()
+                            .compareTo(reconstructions[k + 1].toString()) > 0) {
+                        StringBuilder temp = reconstructions[k];
+                        reconstructions[k] = reconstructions[k + 1];
+                        reconstructions[k + 1] = temp;
+                    }
+                }
+            }
+            for (int index = 0; index < reconstructions.length; index++) {
+                reconstructions[index].insert(0, originalText.charAt(index));
+            }
+        }
 
+        for (int i = 0; i < reconstructions.length - 1; i++) {
+            for (int j = 0; j < reconstructions.length - 1 - i; j++) {
+                if (reconstructions[j].toString()
+                    .compareTo(reconstructions[j + 1].toString()) > 0) {
+                StringBuilder temp = reconstructions[j];
+                reconstructions[j] = reconstructions[j + 1];
+                reconstructions[j + 1] = temp;
+            }
+            }
+        }
         // TO-DO
         // And write the appropriate reconstruction into the file, without the null char
         PrintWriter pw = new PrintWriter(fileName.substring(0, fileName.length() - 3));
+        for (int i = 0; i < reconstructions.length; i++) {
+            if (reconstructions[i].charAt(0) == '\0') {
+                pw.print(reconstructions[i].substring(1));
+            }
+        }
         pw.close();
     }
 }
