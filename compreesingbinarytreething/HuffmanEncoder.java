@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,10 +25,25 @@ public class HuffmanEncoder {
         return characterBinaryGrid.get(c);
     }
 
-    public void encodeFileToHuffmanCodes(String fileToCompress, String encodedFile) throws FileNotFoundException {
+    public void encodeFileToHuffmanCodes(String fileToCompress, String encodedFile) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(encodedFile));
         PrintWriter pw = new PrintWriter(encodedFile + ".huf");
         int binaryCount = 0;
+        while (br.ready()) {
+            char c = (char) br.read();
+            String charInBinary = characterBinaryGrid.get(c);
+            pw.print(charInBinary);
+            binaryCount+= charInBinary.length();
+        } 
 
+        pw.print(characterBinaryGrid.get(EOF));
+        binaryCount+= characterBinaryGrid.get(EOF).length();
+
+        for (int i = 0; i < 8 - (binaryCount % 8); i++) {
+            pw.print('0');
+        }
+        br.close();
+        pw.close();
     }
+    
 }
