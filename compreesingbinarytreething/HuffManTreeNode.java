@@ -28,9 +28,9 @@ public class HuffManTreeNode {
             return "";
         }
         if (isLeftChild()) {
-            return parent.getBinaryCode() + '0';
+            return parent.getBinaryCode() + "0";
         } else {
-            return parent.getBinaryCode() + '1';
+            return parent.getBinaryCode() + "1";
         }
     }
 

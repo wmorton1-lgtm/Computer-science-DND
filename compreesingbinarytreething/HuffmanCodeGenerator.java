@@ -21,6 +21,8 @@ public class HuffmanCodeGenerator {
         readData(frequencyFile);
         sortCharArray();
         root = makeHuffmanTree();
+        makeBinaryGridFromTree(root, "");
+        makeCodeFile(frequencyFile + ".cf");
     }
 
     public void readData(String filePath) throws IOException {
@@ -56,8 +58,10 @@ public class HuffmanCodeGenerator {
     public void sortCharArray() {
         for (int i = 0; i < charListInOrderOfFrequency.size() - 1; i++) {
             for (int j = 0; j < charListInOrderOfFrequency.size() - 1 - i; j++) {
-                if (getFrequency(charListInOrderOfFrequency.get(j)) > charListInOrderOfFrequency
-                        .get(j + 1)) {
+                char current = charListInOrderOfFrequency.get(j);
+                char next = charListInOrderOfFrequency.get(j + 1);
+
+                if (getFrequency(current) > getFrequency(next)) {
                     char temp = charListInOrderOfFrequency.get(j);
                     charListInOrderOfFrequency.set(j, charListInOrderOfFrequency.get(j + 1));
                     charListInOrderOfFrequency.set(j + 1, temp);
@@ -108,7 +112,7 @@ public class HuffmanCodeGenerator {
         }
 
         if (node.isLeaf()) {
-            if (binaryCode == "") {
+            if (binaryCode.equals("")) {
                 binaryCode = "0";
             }
 
