@@ -134,7 +134,7 @@ public class HuffmanCodeGenerator {
 
     public void makeCodeFile(String codeFile) throws IOException {
         PrintWriter pw = new PrintWriter(codeFile);
-        for (int i = 0; i < 128; i++) {
+        for (int i = 1; i < 129; i++) {
             if (characterBinaryGrid.get((char) i) != null) {
                 pw.println(characterBinaryGrid.get((char) i));
             } else {
