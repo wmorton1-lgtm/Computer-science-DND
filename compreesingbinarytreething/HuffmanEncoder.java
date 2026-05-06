@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ public class HuffmanEncoder {
         characterBinaryGrid = new HashMap<Character, String>();
 
         BufferedReader br = new BufferedReader(new FileReader(codeFile));
-        for (int i = 1; i < 129; i++) {
+        for (int i = 0; i < 128; i++) {
             String codeforI = br.readLine();
             if (codeforI != null && codeforI != "") {
                 characterBinaryGrid.put((char) i, codeforI);
@@ -32,7 +33,7 @@ public class HuffmanEncoder {
 
     public void encodeFileToHuffmanCodes(String fileToCompress, String encodedFile) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(fileToCompress));
-        PrintWriter pw = new PrintWriter(encodedFile + ".huf");
+        PrintWriter pw = new PrintWriter(new FileWriter(encodedFile)); // null null null null null CHANGED NAME Here
         int binaryCount = 0;
         while (br.ready()) {
             char c = (char) br.read();

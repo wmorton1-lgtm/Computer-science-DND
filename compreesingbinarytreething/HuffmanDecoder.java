@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -11,11 +12,11 @@ public class HuffmanDecoder {
 
     public HuffmanDecoder(String codeFile) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(codeFile));
-
+        binaryToCharGrid = new HashMap<String, Character>();
         for (int i = 1; i < 129; i++) {
             String currLine = (br.readLine());
-            if (!currLine.equals("")) {
-                binaryToCharGrid.put(currLine, (char) i);
+            if (currLine != null && !currLine.equals("")) {
+                binaryToCharGrid.put(currLine, (char) (i - 1));
             }
         }
         br.close();
@@ -32,14 +33,15 @@ public class HuffmanDecoder {
     public void decodeFileFromHuffmanCodes(String encodedFile, String decodedFile)
             throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(encodedFile));
-        PrintWriter pw = new PrintWriter(encodedFile + ".dec");
-        String currbinary = (char) br.read() + "";
+        PrintWriter pw = new PrintWriter(new FileWriter(decodedFile)); // null null null null null CHANGED NAME Here
+        String currbinary = "";
         while (br.ready()) {
             if (isCode(currbinary)) {
                 if (decodeChar(currbinary) != EOF) {
                     pw.write(decodeChar(currbinary));
                     currbinary = "";
                 } else {
+                    break;
                     // six seven
                 }
             }

@@ -22,7 +22,7 @@ public class HuffmanCodeGenerator {
         sortCharArray();
         root = makeHuffmanTree();
         makeBinaryGridFromTree(root, "");
-        makeCodeFile(frequencyFile + ".cf");
+        makeCodeFile("codefile.txt");
     }
 
     public void readData(String filePath) throws IOException {
@@ -135,8 +135,8 @@ public class HuffmanCodeGenerator {
     public void makeCodeFile(String codeFile) throws IOException {
         PrintWriter pw = new PrintWriter(codeFile);
         for (int i = 1; i < 129; i++) {
-            if (characterBinaryGrid.get((char) i) != null) {
-                pw.println(characterBinaryGrid.get((char) i));
+            if (characterBinaryGrid.get((char) (i - 1)) != null) {
+                pw.println(characterBinaryGrid.get((char) (i - 1)));
             } else {
                 pw.println("");
             }
