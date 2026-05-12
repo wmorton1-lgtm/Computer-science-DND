@@ -91,7 +91,7 @@ public class MiniGPT {
     public void generateText(String outputFileName, int numChars) {
         String currentState = makeFirstState(chainOrder);
         try (Writer writer = new FileWriter(outputFileName)) {
-            writer.write(currentState);s
+            writer.write(currentState);
             for (int i = 0; i < numChars; i++) {
                 String toAdd = predictNextState(currentState);
                 if (toAdd == null) {
